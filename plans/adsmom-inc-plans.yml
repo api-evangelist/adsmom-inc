@@ -1,0 +1,59 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+generated: '2026-07-17'
+method: searched
+provider: Adsmom
+providerId: adsmom-inc
+created: '2026-07-17'
+modified: '2026-07-17'
+tags:
+- Advertising Intelligence
+- Competitive Intelligence
+- SaaS
+description: >-
+  Adsmom is tiered SaaS with a 7-day free trial on every plan. All paid tiers
+  include both REST API and MCP access; tiers differ by tracked advertisers,
+  seats, monthly AI credits and CSV exports. Prices are in EUR/month.
+sources:
+- https://adsmom.com/pricing
+plans:
+- id: adsmom-basic
+  name: Basic
+  type: subscription
+  price: "€75/month"
+  description: Entry tier for solo marketers. API + MCP access included.
+  limits:
+    tracked_advertisers: 5
+    seats: 1
+    ai_credits_per_month: 250
+    csv_exports_per_month: 5
+  features:
+  - REST API access
+  - MCP access
+- id: adsmom-business
+  name: Business
+  type: subscription
+  price: "€450/month"
+  description: Most popular tier for teams. API + MCP access included. Advertisers with more than 20k total ads require a custom plan.
+  limits:
+    tracked_advertisers: 50
+    seats: 5
+    ai_credits_per_month: 1000
+    csv_exports_per_month: 50
+  features:
+  - REST API access
+  - MCP access
+- id: adsmom-custom
+  name: Custom
+  type: subscription
+  price: "From €700/month"
+  description: Enterprise tier with custom integrations. API + MCP access included.
+  limits:
+    tracked_advertisers: "200+"
+    seats: "10+"
+    ai_credits_per_month: 10000
+    csv_exports_per_month: "100+"
+  features:
+  - REST API access
+  - MCP access
+  - Custom Integrations

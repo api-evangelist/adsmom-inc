@@ -1,0 +1,39 @@
+generated: '2026-07-17'
+method: searched
+status: published
+source: https://adsmom.com/product/api
+server:
+  name: adsmom
+  transport: http
+  # Adsmom publishes a hosted MCP server, but the connection URL and credentials
+  # are provisioned per-account from the Integrations section of the app after
+  # sign-in (https://app.adsmom.com/). No public/anonymous endpoint is exposed.
+  url: null
+  connect: https://app.adsmom.com/ (Integrations section)
+  scope: >-
+    Connections are scoped to the account and the pages/advertisers it tracks;
+    connected clients can be reviewed and revoked from account settings.
+clients_supported:
+- Claude
+- Codex
+- Cursor
+- Gemini
+capabilities:
+# Documented on the API/MCP product page; grounded tool inventory is not
+# publicly published (no OpenAPI), so these are the described data operations,
+# not verified operationIds.
+- Search ads by brand, platform, format and date
+- Retrieve full ad details, targeting and creative assets
+- Access daily reach and weekly campaign breakdowns
+- Track competitor activity timelines
+- Access saved ad collections
+plans:
+# MCP access is included on all paid tiers (see plans/ and pricing).
+- Basic
+- Business
+- Custom
+notes: >-
+  Real, first-party hosted MCP server offered by Adsmom for connecting AI
+  assistants over the Model Context Protocol to the Adsmom ad-intelligence
+  corpus. Endpoint and credentials are account-provisioned and therefore not
+  captured verbatim here.

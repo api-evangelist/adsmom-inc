@@ -1,7 +1,17 @@
 aid: adsmom-inc
 name: Adsmom Inc.
-description: Adsmom Inc. is a company surfaced as a portfolio company of 500-global and added to the API
-  Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  Adsmom (SIA Adsmom) is a Latvia-based AI-powered ad intelligence platform that
+  indexes 200M+ ads from Meta, TikTok and Google, decodes them with AI, and gives
+  brands, agencies and research teams a clear read on what competitors are running
+  and what is actually working. The platform covers ad search across a competitor
+  library, spend and creative-strategy insights, an AI chat analyst ("Sense"),
+  real-time competitor alerts, and branded reporting. Adsmom exposes its ad index
+  programmatically via both a hosted Model Context Protocol (MCP) server — for
+  connecting AI assistants such as Claude, Codex, Cursor and Gemini — and a REST
+  API for server-to-server pipelines, internal tools and scheduled jobs. API and
+  MCP access are included on all paid tiers. Adsmom is a 500 Global portfolio
+  company and raised ~$610K in early 2025.
 url: https://raw.githubusercontent.com/api-evangelist/adsmom-inc/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -9,11 +19,31 @@ x-backed-by:
 - 500-global
 x-tier: stub
 x-tier-reason: portfolio-lead
+accessModel:
+  pricing: paid
+  onboarding: unknown
+  trial: true
+  try_now: false
+  public: false
+  label: Paid (free trial)
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
 modified: '2026-07-17'
+image: https://adsmom.com/og-default.png
 tags:
 - Company
+- Advertising
+- Ad Intelligence
+- Competitive Intelligence
+- Marketing
+- AI
+- MCP
+- SaaS
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -23,3 +53,33 @@ maintainers:
 common:
 - type: Website
   url: https://adsmom.com
+- type: Documentation
+  url: https://adsmom.com/product/api
+- type: MCPServer
+  name: Adsmom MCP server
+  url: mcp/adsmom-inc-mcp.yml
+- type: LLMsTxt
+  url: llms/adsmom-inc-llms.txt
+- type: DomainSecurity
+  url: security/adsmom-inc-domain-security.yml
+- type: Blog
+  url: https://adsmom.com/blog
+- type: Pricing
+  url: https://adsmom.com/pricing
+- type: Plans
+  url: plans/adsmom-inc-plans.yml
+- type: SignUp
+  url: https://app.adsmom.com/
+- type: Login
+  url: https://app.adsmom.com/
+- type: TermsOfService
+  url: https://adsmom.com/terms
+- type: PrivacyPolicy
+  url: https://adsmom.com/privacy
+- type: GitHubOrganization
+  url: https://github.com/adsmom
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

@@ -1,0 +1,34 @@
+# Adsmom
+
+> AI-powered ad intelligence platform. Adsmom indexes 200M+ ads from Meta, TikTok and Google, decodes them with AI, and gives brands, agencies and research teams a clear read on what competitors are doing — and what's actually working.
+
+## Product
+
+- [Explore Ads](https://adsmom.com/product/explore): Search 200M+ competitor ads across Meta, TikTok and Google in one library. Filter by brand, platform, format and trend signals.
+- [Ad Insights](https://adsmom.com/product/insights): Decode competitor strategy — spend signals, creative angles, performance patterns — without manual digging.
+- [AI Intelligence (Sense)](https://adsmom.com/product/intelligence): Ask plain-English strategic questions about any tracked brand. Sense answers using the full Adsmom ad corpus.
+- [Real-Time Alerts](https://adsmom.com/product/alerts): Get notified the moment a tracked competitor launches a new campaign, changes creative or shifts spend.
+- [Reporting](https://adsmom.com/product/reporting): Generate branded competitive intel reports for stakeholders — schedule, share and export in a click.
+- [API](https://adsmom.com/product/api): Put the Adsmom ad index inside your own tools. Connect an AI assistant over MCP, or call the REST API from your code.
+
+## Solutions
+
+- [For Brands](https://adsmom.com/solutions/brands): Marketing teams watching their category, learning what creative actually performs, and reacting before the market shifts.
+- [For Agencies](https://adsmom.com/solutions/agencies): Walk into pitches with category-wide competitive intel, build sharper creative briefs, prove ROI with hard numbers.
+- [For Research](https://adsmom.com/solutions/research): Use Adsmom as a queryable corpus of 200M+ ads for trend analysis, panel studies and market sizing.
+
+## Resources
+
+- [Blog](https://adsmom.com/blog): Strategy, creative analysis and platform deep-dives on competitive ad intelligence.
+- [Customers](https://adsmom.com/customers): How brands, agencies and research teams use Adsmom in production.
+
+## Company
+
+- [Team](https://adsmom.com/team): The people building Adsmom — engineers, marketers and data scientists.
+- [Pricing](https://adsmom.com/pricing): Plans from solo marketer to enterprise. Free tier available.
+
+## Legal
+
+- [Privacy Policy](https://adsmom.com/privacy): How SIA Adsmom collects, processes and protects personal data.
+- [Terms & Conditions](https://adsmom.com/terms): Terms of service for the Adsmom platform.
+- [Cookies Policy](https://adsmom.com/cookies): Cookie usage, retention and consent management.
