@@ -10,8 +10,13 @@ description: >-
   programmatically via both a hosted Model Context Protocol (MCP) server — for
   connecting AI assistants such as Claude, Codex, Cursor and Gemini — and a REST
   API for server-to-server pipelines, internal tools and scheduled jobs. API and
-  MCP access are included on all paid tiers. Adsmom is a 500 Global portfolio
-  company and raised ~$610K in early 2025.
+  MCP access are included on all paid tiers. The REST API publishes a public
+  OpenAPI 3.0.0 description at api.adsmom.com covering 78 operations across four
+  paid-ad platforms (Meta, TikTok, Google, LinkedIn) plus TikTok and Instagram
+  organic accounts, grouped into Explore (ad search and hydration), Insights
+  (tracked-advertiser management, AI summaries, weekly reports) and Analytics
+  (reach, activity, share of voice, runtime, creative mix, targeting). Adsmom is
+  a 500 Global portfolio company and raised ~$610K in early 2025.
 url: https://raw.githubusercontent.com/api-evangelist/adsmom-inc/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -33,7 +38,7 @@ accessModel:
   method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-08-13'
 image: https://adsmom.com/og-default.png
 tags:
 - Company
@@ -44,7 +49,75 @@ tags:
 - AI
 - MCP
 - SaaS
-apis: []
+- OpenAPI
+- REST
+- Analytics
+- Social Media
+- Agent Native
+apis:
+- name: Adsmom REST API
+  description: >-
+    Stable REST API over the Adsmom ad index. 78 operations across Explore (list,
+    hydrate and detail Meta/TikTok/Google/LinkedIn ads, plus reach and impression
+    timeseries and point-in-time snapshots), Insights (track and untrack
+    advertisers and organic accounts, AI insight summaries, weekly reports) and
+    Analytics (reach over time and by region, new/active ad activity, share of
+    voice via Lorenz/Gini, runtime distribution, creative mix and targeting
+    overlap). Authenticated with OAuth 2.0 bearer JWTs issued by
+    app.adsmom.com; credentials are created from the Integrations section of a
+    paid account.
+  humanURL: https://adsmom.com/product/api
+  baseURL: https://api.adsmom.com
+  tags:
+  - Advertising
+  - Ad Intelligence
+  - Competitive Intelligence
+  - Analytics
+  - OpenAPI
+  - REST
+  properties:
+  - type: OpenAPI
+    url: openapi/adsmom-inc-openapi.json
+  - type: Documentation
+    url: https://adsmom.com/product/api
+  - type: Overlay
+    url: overlays/adsmom-inc-openapi-overlay.yaml
+  - type: Authentication
+    url: authentication/adsmom-inc-authentication.yml
+  - type: OAuthScopes
+    url: scopes/adsmom-inc-scopes.yml
+  - type: ErrorCatalog
+    url: errors/adsmom-inc-problem-types.yml
+  - type: Conventions
+    url: conventions/adsmom-inc-conventions.yml
+  - type: DataModel
+    url: data-model/adsmom-inc-data-model.yml
+  - type: RateLimits
+    url: rate-limits/adsmom-inc-rate-limits.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+- name: Adsmom MCP Server
+  description: >-
+    First-party hosted Model Context Protocol server that exposes the same ad
+    index to AI assistants (Claude, Codex, Cursor, Gemini). Streamable HTTP at
+    https://api.adsmom.com/mcp, protected by OAuth 2.0 with the mcp:invoke scope
+    and RFC 9728 protected-resource metadata; connected from the Integrations
+    section of an Adsmom account.
+  humanURL: https://adsmom.com/product/api
+  baseURL: https://api.adsmom.com/mcp
+  tags:
+  - MCP
+  - AI
+  - Agent Native
+  properties:
+  - type: MCPServer
+    url: mcp/adsmom-inc-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/adsmom-inc-tool-crosswalk.yml
+  - type: Documentation
+    url: https://adsmom.com/product/api
+  - type: OAuthScopes
+    url: scopes/adsmom-inc-scopes.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -55,9 +128,37 @@ common:
   url: https://adsmom.com
 - type: Documentation
   url: https://adsmom.com/product/api
+- type: APIReference
+  url: https://adsmom.com/product/api
+- type: OpenAPI
+  url: openapi/adsmom-inc-openapi.json
 - type: MCPServer
   name: Adsmom MCP server
   url: mcp/adsmom-inc-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/adsmom-inc-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/adsmom-inc-well-known.yml
+- type: Authentication
+  url: authentication/adsmom-inc-authentication.yml
+- type: OAuthScopes
+  url: scopes/adsmom-inc-scopes.yml
+- type: ErrorCatalog
+  url: errors/adsmom-inc-problem-types.yml
+- type: Conventions
+  url: conventions/adsmom-inc-conventions.yml
+- type: DataModel
+  url: data-model/adsmom-inc-data-model.yml
+- type: RateLimits
+  url: rate-limits/adsmom-inc-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/adsmom-inc-lifecycle.yml
+- type: Conformance
+  url: conformance/adsmom-inc-conformance.yml
+- type: Overlay
+  url: overlays/adsmom-inc-openapi-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
 - type: LLMsTxt
   url: llms/adsmom-inc-llms.txt
 - type: DomainSecurity
@@ -79,7 +180,14 @@ common:
 - type: GitHubOrganization
   url: https://github.com/adsmom
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 22
+  artifacts_updated: 4
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Contract discovery on the API host root found a real, previously-missed
+    OpenAPI 3.0.0 at https://api.adsmom.com/api/v1/openapi.json (66 paths, 78
+    operations, 110 schemas) and corrected the MCP endpoint from the web-app root
+    to https://api.adsmom.com/mcp, verified by a JSON-RPC tools/list probe
+    returning a spec-correct 401 OAuth challenge.
