@@ -1,0 +1,99 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  Probes of https://adsmom.com/changelog (404), https://adsmom.com/security (404),
+  https://status.adsmom.com (does not resolve), https://adsmom.com/sitemap.xml
+  (200 — 33 URLs, no docs/changelog/status entry), https://adsmom.com/pricing
+  (302 to /demo), and openapi/adsmom-inc-openapi.json.
+checked: '2026-08-13'
+summary: >-
+  Adsmom ships a real, versioned REST API and a hosted MCP server but publishes
+  none of the operational scaffolding around them: no changelog, no status page,
+  no deprecation policy, no SLA, no support page, no security contact. The
+  contract calls itself "Stable" in info.description; nothing else backs that up.
+
+versioning:
+  scheme: uri-path
+  current_version: v1
+  spec_version: '1.0'
+  stability_claim: >-
+    info.description states "Stable REST API for tracked ad intelligence across
+    Meta, TikTok, and Google." — a self-declared stability claim with no
+    published policy behind it.
+  policy_published: false
+  breaking_change_policy: not published
+  version_negotiation: none
+
+deprecation:
+  policy_published: false
+  sunset_header: not documented (RFC 8594 Sunset / Deprecation headers not mentioned)
+  deprecated_operations: 0
+  evidence: >-
+    No operation, parameter or schema in the 78-operation spec carries
+    `deprecated: true`. No deprecation policy page exists on adsmom.com.
+  note: >-
+    NO Deprecation pointer is emitted in apis.yml. Zero deprecated operations is
+    a clean spec, not a deprecation policy.
+
+status_page:
+  published: false
+  probed:
+  - {url: 'https://status.adsmom.com/', result: NXDOMAIN}
+  - {url: 'https://adsmom.com/status', result: not present in sitemap}
+  note: >-
+    NO StatusPage pointer is emitted in apis.yml. There is no uptime or incident
+    surface for either the REST API or the MCP server.
+
+changelog:
+  published: false
+  probed:
+  - {url: 'https://adsmom.com/changelog', status: 404}
+  note: >-
+    The blog (https://adsmom.com/blog, 16 posts in the sitemap) is marketing and
+    ad-strategy commentary; it carries a funding announcement but no API release
+    notes. No ChangeLog artifact or pointer is emitted.
+
+sla:
+  published: false
+  uptime_commitment: none published
+  support_response_commitment: none published
+
+support:
+  channels:
+  - {type: sales, url: 'https://adsmom.com/demo', note: 'Book a demo / book a call — the only public contact route.'}
+  - {type: in-app, url: 'https://app.adsmom.com/', note: 'Account-holder support surfaces are behind the login.'}
+  developer_support_channel: none published
+  note: >-
+    No help center, community, forum, Discord/Slack or support email is
+    published for developers. No Support pointer is emitted.
+
+security_contact:
+  published: false
+  security_txt: absent on all three hosts (see well-known/adsmom-inc-well-known.yml)
+  disclosure_page: none found
+  bug_bounty: none found
+  note: probe-security-programs.py returned vdp=none trust=none on 2026-08-13.
+
+commercial_lifecycle:
+  pricing_page_state: >-
+    https://adsmom.com/pricing now returns 302 to https://adsmom.com/demo and is
+    absent from the sitemap. The tiered EUR pricing captured in
+    plans/adsmom-inc-plans.yml on 2026-07-17 is no longer published; Adsmom has
+    moved to a book-a-demo motion. The plans artifact is retained as the last
+    published state and marked accordingly.
+  checked: '2026-08-13'
+
+company:
+  legal_entity: SIA Adsmom (Latvia)
+  funding: ~$610K announced early 2025 (https://adsmom.com/blog/adsmom-raises-600k-investment)
+  investors: [500 Global]
+  github_org:
+    url: https://github.com/adsmom
+    public_repos: 0
+    checked: '2026-08-13'
+
+cross_links:
+  conventions: conventions/adsmom-inc-conventions.yml
+  plans: plans/adsmom-inc-plans.yml
+  well_known: well-known/adsmom-inc-well-known.yml
+  openapi: openapi/adsmom-inc-openapi.json

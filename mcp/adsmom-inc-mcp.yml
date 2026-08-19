@@ -1,39 +1,102 @@
-generated: '2026-07-17'
-method: searched
+generated: '2026-08-13'
+method: probed
 status: published
-source: https://adsmom.com/product/api
+source: >-
+  https://adsmom.com/product/api (product page) + live probe of
+  https://api.adsmom.com/mcp on 2026-08-13 (HTTP 401 with
+  WWW-Authenticate: Bearer realm="mcp",
+  resource_metadata="https://app.adsmom.com/.well-known/oauth-protected-resource/mcp")
+  + https://app.adsmom.com/.well-known/oauth-protected-resource/mcp (HTTP 200)
+  + https://app.adsmom.com/.well-known/oauth-authorization-server (HTTP 200)
+
 server:
   name: adsmom
-  transport: http
-  # Adsmom publishes a hosted MCP server, but the connection URL and credentials
-  # are provisioned per-account from the Integrations section of the app after
-  # sign-in (https://app.adsmom.com/). No public/anonymous endpoint is exposed.
-  url: null
-  connect: https://app.adsmom.com/ (Integrations section)
+  vendor: Adsmom Inc. (SIA Adsmom)
+  transport: streamable-http
+  url: https://api.adsmom.com/mcp
+  connect: >-
+    Connected from the Integrations section of https://app.adsmom.com/ — the
+    provider's own instruction on https://adsmom.com/product/api ("Connect it in
+    a minute from the Integrations section of your account").
   scope: >-
-    Connections are scoped to the account and the pages/advertisers it tracks;
+    Connections are scoped to the account and the advertisers/pages it tracks;
     connected clients can be reviewed and revoked from account settings.
+
+deployment:
+  mode: remote
+  endpoint: https://api.adsmom.com/mcp
+  auth: oauth
+  verified: probed
+  probe:
+    url: https://api.adsmom.com/mcp
+    method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    body: '{"message":"missing_token","error":"Unauthorized","statusCode":401}'
+    www_authenticate: Bearer realm="mcp", resource_metadata="https://app.adsmom.com/.well-known/oauth-protected-resource/mcp"
+    checked: '2026-08-13'
+  note: >-
+    CORRECTION to the 2026-08-12 census entry, which recorded the endpoint as
+    https://app.adsmom.com/ (the web app root, verified only as "http-200").
+    That is the login page, not an MCP endpoint. The real endpoint is
+    https://api.adsmom.com/mcp — an https URL an MCP client POSTs to, which
+    answers JSON-RPC with a spec-correct 401 OAuth challenge. app.adsmom.com/mcp
+    answers identically (same ETag), so the two hostnames front the same server.
+  install: null
+  package: null
+  package_note: >-
+    No stdio/npx package exists. Registry searches for adsmom on npm, PyPI,
+    RubyGems and Packagist all returned 404/zero results on 2026-08-13, and
+    github.com/adsmom has 0 public repositories. This is a remote-only MCP
+    deployment — an agent can reach it today without a human installing anything.
+
+authorization:
+  type: oauth2
+  issuer: https://app.adsmom.com
+  authorization_endpoint: https://app.adsmom.com/oauth/authorize
+  token_endpoint: https://app.adsmom.com/oauth/token
+  registration_endpoint: https://app.adsmom.com/oauth/register
+  dynamic_client_registration: true
+  grant_types: [authorization_code, refresh_token]
+  pkce: S256 (required — the only method offered)
+  scopes: [mcp:invoke]
+  protected_resource_metadata: https://app.adsmom.com/.well-known/oauth-protected-resource/mcp
+  rfc9728: true
+  see: authentication/adsmom-inc-authentication.yml
+
+tools:
+  listed: false
+  reason: >-
+    tools/list requires a bearer token with the mcp:invoke scope. The live tool
+    manifest — names, descriptions and inputSchemas — could not be read
+    anonymously and is NOT reproduced here. What follows is the capability list
+    Adsmom itself publishes in prose on https://adsmom.com/product/api, not a
+    tool manifest, and the names are descriptions rather than tool identifiers.
+  published_capabilities:
+  - Search the ad index — query competitor ads across tracked pages by brand, platform, format and date
+  - Pull creatives and detail — full ad detail, targeting, and the underlying creative assets
+  - Analyze reach — daily reach and weekly breakdowns over a campaign's lifetime
+  - Follow activity timelines — when a competitor launched, changed or stopped ads
+  - Work with collections — read the ad collections saved in the Adsmom platform
+  schemas_require: authenticated tools/list introspection
+  crosswalk: mcp/adsmom-inc-tool-crosswalk.yml
+
 clients_supported:
 - Claude
 - Codex
 - Cursor
 - Gemini
-capabilities:
-# Documented on the API/MCP product page; grounded tool inventory is not
-# publicly published (no OpenAPI), so these are the described data operations,
-# not verified operationIds.
-- Search ads by brand, platform, format and date
-- Retrieve full ad details, targeting and creative assets
-- Access daily reach and weekly campaign breakdowns
-- Track competitor activity timelines
-- Access saved ad collections
+
 plans:
-# MCP access is included on all paid tiers (see plans/ and pricing).
 - Basic
 - Business
 - Custom
+plans_note: API and MCP access are included on all paid tiers (plans/adsmom-inc-plans.yml).
+
 notes: >-
-  Real, first-party hosted MCP server offered by Adsmom for connecting AI
-  assistants over the Model Context Protocol to the Adsmom ad-intelligence
-  corpus. Endpoint and credentials are account-provisioned and therefore not
-  captured verbatim here.
+  A real, first-party, remotely-hosted MCP server. It is Adsmom's strongest agent
+  surface: reachable at a stable https URL, protected by a discoverable OAuth 2.0
+  authorization server with dynamic client registration and PKCE, and advertised
+  through RFC 9728 protected-resource metadata that a compliant MCP client can
+  follow from the 401 alone. Its weakness is discovery on the human side — no
+  tool list, no inputSchemas and no per-tool documentation are published anywhere
+  a non-customer can read.

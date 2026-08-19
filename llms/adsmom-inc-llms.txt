@@ -25,7 +25,6 @@
 ## Company
 
 - [Team](https://adsmom.com/team): The people building Adsmom — engineers, marketers and data scientists.
-- [Pricing](https://adsmom.com/pricing): Plans from solo marketer to enterprise. Free tier available.
 
 ## Legal
 

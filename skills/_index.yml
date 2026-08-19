@@ -1,0 +1,63 @@
+generated: '2026-08-13'
+method: generated
+source: >-
+  Packaged Agent Skills generated from openapi/adsmom-inc-openapi.json (OpenAPI
+  3.0.0, 66 paths, 78 operations, 110 schemas — harvested verbatim from
+  https://api.adsmom.com/api/v1/openapi.json on 2026-08-13). Every step is
+  grounded in an operationId verified verbatim in the spec, and every parameter,
+  enum value, cap and caveat is quoted from the spec's own descriptions.
+  Cross-cutting rules cite ../authentication/, ../conventions/, ../errors/,
+  ../rate-limits/ and ../data-model/.
+provider_published_skills: none
+provider_published_skills_note: >-
+  Adsmom publishes no AGENTS.md, no skills directory and no MCP tool
+  documentation a non-customer can read. These skills are generated from the
+  public OpenAPI, not copied from the provider.
+
+skills:
+- file: adsmom-inc-start-tracking-a-competitor.md
+  name: Start tracking a competitor
+  api: openapi/adsmom-inc-openapi.json
+  operations: [getUsage, trackMetaAdvertiser, listMetaAdvertisers, getMetaAdvertiser, trackTiktokAdvertiser, untrackMetaAdvertiser]
+  why: >-
+    The gate flow. Nothing in Explore, Insights or Analytics returns data for an
+    untracked advertiser, tracked slots are a paid entitlement, and ingest is
+    asynchronous (pending_ingest).
+- file: adsmom-inc-pull-a-competitors-ads-and-reach.md
+  name: Pull a competitor's ads and their reach
+  api: openapi/adsmom-inc-openapi.json
+  operations: [listMetaAds, getMetaAd, batchMetaAdReach, getMetaAdReach, listTiktokAds, listTiktokAdSnapshots, getTiktokAdAtSnapshot]
+  why: >-
+    The core read path over the 200M+ ad index, including the two traps an agent
+    will otherwise hit — signed creative URLs that expire in ~10 minutes, and
+    cursor pagination with no cursor in the response.
+- file: adsmom-inc-weekly-competitive-briefing.md
+  name: Build a weekly competitive briefing
+  api: openapi/adsmom-inc-openapi.json
+  operations: [getMetaAdvertiserSummary, getMetaAdvertiserWeeklyReport, getMetaActivity, getMetaShareOfVoice, getMetaTopAds, getMetaReach, getMetaReachRegions, getMetaTargeting, getUsage]
+  why: >-
+    The scheduled-job flow the REST API exists for, and the one with the most
+    AI-generated ("structure may evolve") payload to handle defensively.
+- file: adsmom-inc-analyze-tiktok-creative-strategy.md
+  name: Analyze TikTok creative strategy
+  api: openapi/adsmom-inc-openapi.json
+  operations: [getTiktokCreative, getTiktokCreativeDimension, getTiktokRuntime, getTiktokTargeting, getTiktokShareOfVoice, getTiktokActivity, listTiktokAds, getTiktokAd, listTiktokAdSnapshots]
+  why: >-
+    TikTok carries the richest analytics surface of the four platforms (9
+    operations) and is the only one combining creative mix, runtime distribution
+    and snapshots.
+
+shared_rules:
+  base_url: https://api.adsmom.com
+  base_url_caveat: >-
+    The published spec declares servers[] as [{url: "/"}] and names no host. Use
+    the base above; recorded in overlays/adsmom-inc-openapi-overlay.yaml.
+  auth: OAuth 2.0 bearer JWT from https://app.adsmom.com/oauth/token (client_credentials for server-to-server).
+  path_ids: Use id_token (slash-free) in path segments, never gid.
+  idempotency: Not supported and not documented — no Idempotency-Key on any operation.
+  pagination: cursor + limit (max 25) on input; no next-cursor is returned or declared.
+  batch_cap: 25 ids per batch-hydration call.
+  signed_media_ttl: ~10 minutes on media_url and thumbnail_url — re-hydrate, never cache.
+  rate_limits: No RateLimit-* headers; read rate_limit.requests_per_minute from getUsage.
+  errors: RFC 9457 application/problem+json on routed paths; Express {"message","error","statusCode"} on unrouted paths. No 4xx/5xx is declared in the spec.
+  events: None — no webhooks, no AsyncAPI. Every flow is a poll.

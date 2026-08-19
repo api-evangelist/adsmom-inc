@@ -1,0 +1,172 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  Derived from openapi/adsmom-inc-openapi.json — 110 component schemas, 66
+  paths, 78 operations — by following $ref edges and id-reference fields.
+  No object reference page is published by Adsmom; every field name, type and
+  description below is read verbatim out of the spec.
+summary: >-
+  Adsmom's model is one shape repeated per platform. An ACCOUNT tracks
+  ADVERTISERS (paid platforms) and SOCIAL ACCOUNTS (organic platforms); each
+  tracked entity owns ADS, and each ad owns MEDIA, TARGETING, a REACH/IMPRESSION
+  timeseries and, on TikTok and LinkedIn, point-in-time SNAPSHOTS. AI output
+  (insight summaries, weekly reports) hangs off the tracked entity, not the ad.
+  Analytics returns CHART objects, which are read models over the same core —
+  they are not separately addressable resources.
+
+identifiers:
+  gid:
+    description: Canonical global id, verbatim from the spec — "Canonical global id. Use the slash-free form in path params."
+    shape: contains a slash; not URL-path safe
+    present_on: every core entity (Advertiser, TrackedAdvertiser, SocialAccount, TrackedSocialAccount, MetaAd, AdvertiserInsight, WeeklyReport, ...)
+  id_token:
+    description: '"Slash-free id token for use in URL path segments." The value every {id_token} path parameter takes.'
+    used_by_path_params: [id_token]
+  snapshot_uuid:
+    description: Snapshot uuid — "address one at /ads/{id}/snapshots/{uuid}".
+    used_by_path_params: [snapshot_uuid]
+    entities: [TiktokAdSnapshot, LinkedinAdSnapshot]
+  external_id:
+    description: '"Platform-native business id, when resolved." The Meta/TikTok/Google/LinkedIn id, exposed but not used for addressing.'
+  note: >-
+    Adsmom deliberately runs two ids per object — gid (canonical, contains a
+    slash) and id_token (slash-free, path-safe). A client must use id_token in
+    URLs. There are no type-prefixed ids in the Stripe sense.
+
+platforms:
+  paid: [meta, tiktok, google, linkedin]
+  organic: [tiktok-social, instagram-social]
+  note: >-
+    `platform` is a discriminator string on nearly every entity. The API does not
+    use a polymorphic schema — each platform gets its own concrete schema set
+    (MetaAd, TiktokAd, GoogleAd, LinkedinAd), which is why 110 schemas describe
+    what is conceptually about a dozen entities.
+
+entities:
+- name: Account
+  addressable: partially
+  operations: [getUsage]
+  fields: [plan, tracked_advertisers, credits, rate_limit]
+  note: >-
+    The account itself is not a resource; GET /api/v1/usage is the only window
+    onto it. Everything else is implicitly scoped to the token's account.
+
+- name: Advertiser
+  schema: Advertiser
+  fields: [gid, id_token, platform, name]
+  note: An advertiser/page as Adsmom knows it, before tracking.
+
+- name: TrackedAdvertiser
+  schema: TrackedAdvertiser
+  fields: [gid, id_token, platform, name, external_id, is_active, pending_ingest, tracked_at]
+  operations:
+    list: [listMetaAdvertisers, listTiktokAdvertisers, listGoogleAdvertisers, listLinkedinAdvertisers]
+    create: [trackMetaAdvertiser, trackTiktokAdvertiser, trackGoogleAdvertiser, trackLinkedinAdvertiser]
+    read: [getMetaAdvertiser, getTiktokAdvertiser, getGoogleAdvertiser, getLinkedinAdvertiser]
+    delete: [untrackMetaAdvertiser, untrackTiktokAdvertiser, untrackGoogleAdvertiser, untrackLinkedinAdvertiser]
+  create_body: '{Meta,Tiktok,Google,Linkedin}TrackBody — a single `query` field (page name, handle or numeric page id)'
+  lifecycle_field: pending_ingest ("True when the ingest crawl has not completed yet")
+
+- name: SocialAccount / TrackedSocialAccount
+  schema: [SocialAccount, TrackedSocialAccount]
+  fields: [gid, id_token, platform, handle, name, follower_count, is_active, pending_ingest, tracked_at]
+  operations:
+    list: [listTiktokSocialAccounts, listInstagramSocialAccounts]
+    create: [trackTiktokSocialAccount, trackInstagramSocialAccount]
+    read: [getTiktokSocialAccount, getInstagramSocialAccount]
+    delete: [untrackTiktokSocialAccount, untrackInstagramSocialAccount]
+  create_body: SocialAccountTrackBody
+  note: The organic mirror of TrackedAdvertiser — handle + follower_count instead of external_id.
+
+- name: Ad
+  schemas: [MetaAd, TiktokAd, GoogleAd, LinkedinAd]
+  summary_schemas: [MetaAdSummary, TiktokAdSummary, GoogleAdSummary, LinkedinAdSummary]
+  operations:
+    list: [listMetaAds, listTiktokAds, listGoogleAds, listLinkedinAds]
+    read: [getMetaAd, getTiktokAd, getGoogleAd, getLinkedinAd]
+  note: >-
+    List operations return the *Summary projection; the single-read returns the
+    full object with media[] and targeting. `targeting` is populated only with
+    `include=full_targeting` and is null otherwise — stated verbatim in the spec.
+
+- name: AdMedia
+  schemas: [MetaAdMedia, TiktokAdMedia, GoogleAdMedia, LinkedinAdMedia]
+  fields: [id, type, media_url, thumbnail_url]
+  volatility: >-
+    media_url and thumbnail_url are SIGNED and short-lived (~10 minutes) —
+    "Fetch promptly or re-request." Never cache or persist these URLs; store the
+    ad id_token and re-hydrate.
+
+- name: Targeting
+  schemas: [MetaTargeting, TiktokTargeting, GoogleTargeting, LinkedinTargeting]
+  meta_fields: [age_range, gender, locations]
+  linkedin_extra: [LinkedinTargetingSegment, LinkedinTargetingParameter]
+
+- name: ReachTimeline / ImpressionsTimeline
+  schemas: [MetaReachTimeline, MetaReachPoint, TiktokReachTimeline, TiktokReachPoint, LinkedinImpressionsTimeline, LinkedinImpressionsPoint]
+  operations:
+    single: [getMetaAdReach, getTiktokAdReach, getLinkedinAdImpressions]
+    batch: [batchMetaAdReach, batchTiktokAdReach, batchLinkedinAdImpressions]
+  note: >-
+    Google has no per-ad reach timeseries — impressions appear only in
+    Analytics (getGoogleActivity, GoogleImpressionRange). LinkedIn reports
+    impression BRACKETS, not point values.
+
+- name: AdSnapshot
+  schemas: [TiktokAdSnapshot, LinkedinAdSnapshot]
+  fields: [uuid, captured_at, is_active, last_shown_date, reach_upper_bound, reach_lower_bound, region_reach]
+  operations: [listTiktokAdSnapshots, getTiktokAdAtSnapshot, listLinkedinAdSnapshots, getLinkedinAdAtSnapshot]
+  note: >-
+    Only TikTok and LinkedIn ads are snapshotted. This is the only time-travel
+    surface in the API — Meta and Google ads expose current state only.
+
+- name: AdvertiserInsight
+  schema: AdvertiserInsight
+  fields: [gid, id_token, platform, status, generated_at, total_ads_analyzed, page_summary, ad_analysis, initial_assessment, recommendations]
+  operations: [getMetaAdvertiserSummary, getTiktokAdvertiserSummary, getGoogleAdvertiserSummary, getLinkedinAdvertiserSummary, getTiktokSocialAccountSummary, getInstagramSocialAccountSummary]
+  schema_stability: >-
+    page_summary, ad_analysis, initial_assessment and recommendations are typed
+    `object` with no properties and the spec's own caveat "AI-generated;
+    structure may evolve." Treat as unstructured — do not bind a typed client.
+  async_hint: '`status` carries a generation status (e.g. completed, pending).'
+
+- name: WeeklyReport
+  schema: [WeeklyReport, SocialAccountWeeklyReport]
+  fields: [gid, id_token, platform, week_start, week_end, created_at, report, metrics, previous_metrics]
+  operations: [getMetaAdvertiserWeeklyReport, getTiktokAdvertiserWeeklyReport, getGoogleAdvertiserWeeklyReport, getLinkedinAdvertiserWeeklyReport, getTiktokSocialAccountWeeklyReport, getInstagramSocialAccountWeeklyReport]
+  schema_stability: '`report` is an untyped object, "AI-generated; structure may evolve."'
+
+- name: AnalyticsChart
+  schemas: [MetaReachChart, MetaReachRegionsChart, MetaActivityChart, MetaRegionsChart, MetaShareOfVoiceChart, MetaTargetingChart, MetaTopAdsChart, TiktokReachChart, TiktokReachRegionsChart, TiktokActivityChart, TiktokRegionsChart, TiktokShareOfVoiceChart, TiktokRuntimeChart, TiktokTargetingChart, TiktokCreativeChart, TiktokCreativeDimensionChart, GoogleActivityChart, GoogleRegionsChart, GoogleShareOfVoiceChart, GoogleRuntimeChart, GoogleCreativeChart, GoogleStatsChart]
+  addressable: false
+  note: >-
+    23 of the 110 schemas are *Chart read models returned by the Analytics tag.
+    They are computed views over tracked advertisers, keyed by AnalyticsAdvertiserRef
+    — not stored resources, and they have no id.
+
+relationships:
+- {from: Account, to: TrackedAdvertiser, type: has_many, via: 'implicit (token scope)'}
+- {from: Account, to: TrackedSocialAccount, type: has_many, via: 'implicit (token scope)'}
+- {from: TrackedAdvertiser, to: Ad, type: has_many, via: 'advertiser_id query parameter on the list operations'}
+- {from: Ad, to: Advertiser, type: belongs_to, via: '$ref {Meta,Tiktok,Google,Linkedin}AdvertiserRef on the `advertiser` field'}
+- {from: Ad, to: AdMedia, type: has_many, via: '$ref array on the `media` field'}
+- {from: Ad, to: Targeting, type: has_one, via: '`targeting` field; null unless include=full_targeting'}
+- {from: Ad, to: ReachTimeline, type: has_one, via: 'GET /ads/{id_token}/reach'}
+- {from: Ad, to: AdSnapshot, type: has_many, via: 'GET /ads/{id_token}/snapshots (TikTok + LinkedIn only)'}
+- {from: TrackedAdvertiser, to: AdvertiserInsight, type: has_one, via: 'GET /advertisers/{id_token}/summary'}
+- {from: TrackedAdvertiser, to: WeeklyReport, type: has_many, via: 'GET /advertisers/{id_token}/reports/weekly?week_start='}
+- {from: TrackedSocialAccount, to: SocialAccountInsight, type: has_one, via: 'GET /accounts/{id_token}/summary'}
+- {from: TrackedSocialAccount, to: SocialAccountWeeklyReport, type: has_many, via: 'GET /accounts/{id_token}/reports/weekly'}
+- {from: AnalyticsChart, to: TrackedAdvertiser, type: references, via: 'AnalyticsAdvertiserRef + advertiser_ids query parameter'}
+- {from: AdSnapshot, to: RegionReach, type: has_many, via: '$ref array on `region_reach`'}
+
+counts:
+  schemas: 110
+  paths: 66
+  operations: 78
+  chart_read_models: 23
+
+cross_links:
+  openapi: openapi/adsmom-inc-openapi.json
+  conventions: conventions/adsmom-inc-conventions.yml
+  skills: skills/_index.yml

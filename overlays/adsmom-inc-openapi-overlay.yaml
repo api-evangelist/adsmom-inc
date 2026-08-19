@@ -1,0 +1,128 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Adsmom REST API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-08-13'
+  method: generated
+  source: >-
+    Generated against openapi/adsmom-inc-openapi.json, harvested verbatim from
+    https://api.adsmom.com/api/v1/openapi.json on 2026-08-13. This overlay
+    records API Evangelist's enhancements WITHOUT mutating the harvested spec.
+    Every value below is sourced from an observed probe, a published Adsmom
+    document, or a sibling artifact in this repo — nothing is invented.
+  extends: openapi/adsmom-inc-openapi.json
+  note: >-
+    The single most consequential action here is the servers[] repair. The
+    published spec declares `servers: [{url: "/"}]`, a relative server naming no
+    host, so a generated client has no base URL. The concrete host is established
+    by the fact that the document is itself served from
+    https://api.adsmom.com/api/v1/openapi.json and every declared /api/v1/* path
+    resolves there.
+
+actions:
+- target: $.servers
+  description: >-
+    Replace the hostless relative server with the concrete production host.
+    Evidence: the spec is served from https://api.adsmom.com/api/v1/openapi.json,
+    and GET https://api.adsmom.com/api/v1/usage returns an RFC 9457 401 (a routed
+    endpoint) while GET https://api.adsmom.com/api/v1/nope returns 404.
+  update:
+  - url: https://api.adsmom.com
+    description: Production
+
+- target: $.info
+  description: Add the contact, licence and terms Adsmom publishes on its own site but omits from the spec (info.contact is an empty object upstream).
+  update:
+    contact:
+      name: Adsmom Inc. (SIA Adsmom)
+      url: https://adsmom.com/product/api
+    termsOfService: https://adsmom.com/terms
+    x-privacy-policy: https://adsmom.com/privacy
+    x-provider-slug: adsmom-inc
+
+- target: $.tags
+  description: >-
+    Populate the empty root tags[] with the 14 tag names the operations already
+    use, and describe each. Names are copied verbatim from the operations; the
+    descriptions summarise the operations grouped under them.
+  update:
+  - {name: 'Account', description: 'Plan, credit balance, tracked-advertiser count and the per-minute rate limit for the calling account.'}
+  - {name: 'Explore · Meta Ads', description: 'List, batch-hydrate and read Meta ads from tracked advertisers, plus daily reach timeseries.'}
+  - {name: 'Explore · TikTok Ads', description: 'List, batch-hydrate and read TikTok ads, their reach timeseries, and point-in-time snapshots.'}
+  - {name: 'Explore · Google Ads', description: 'List, batch-hydrate and read Google ads from tracked advertisers.'}
+  - {name: 'Explore · LinkedIn Ads', description: 'List, batch-hydrate and read LinkedIn ads, their impression-bracket timeseries, and snapshots.'}
+  - {name: 'Insights · Meta', description: 'Track and untrack Meta advertisers; AI insight summaries and weekly reports.'}
+  - {name: 'Insights · TikTok', description: 'Track and untrack TikTok advertisers; AI insight summaries and weekly reports.'}
+  - {name: 'Insights · Google', description: 'Track and untrack Google advertisers; AI insight summaries and weekly reports.'}
+  - {name: 'Insights · LinkedIn', description: 'Track and untrack LinkedIn advertisers; AI insight summaries and weekly reports.'}
+  - {name: 'Insights · TikTok Organic', description: 'Track and untrack TikTok organic accounts; AI summaries and weekly organic reports.'}
+  - {name: 'Insights · Instagram Organic', description: 'Track and untrack Instagram organic accounts; AI summaries and weekly organic reports.'}
+  - {name: 'Analytics · Meta', description: 'Reach over time and by region, activity counts, share of voice (Lorenz/Gini), targeting and top ads.'}
+  - {name: 'Analytics · TikTok', description: 'Reach, activity, regions, share of voice, runtime distribution, targeting overlap and creative mix.'}
+  - {name: 'Analytics · Google', description: 'Activity and impressions, regions, share of voice, runtime distribution, creative breakdown and per-advertiser stats.'}
+
+- target: $.components.securitySchemes.oauth
+  description: >-
+    Annotate the bearer scheme with the real OAuth 2.0 endpoints and scopes the
+    provider publishes anonymously at
+    https://app.adsmom.com/.well-known/oauth-authorization-server. The upstream
+    scheme is a bare http/bearer with no issuer, endpoints or scopes.
+  update:
+    description: >-
+      OAuth 2.0 bearer JWT issued by https://app.adsmom.com. Server-to-server
+      clients use client_credentials; interactive MCP clients use
+      authorization_code with PKCE (S256). Credentials are created from the
+      Integrations section of a paid Adsmom account.
+    x-oauth-issuer: https://app.adsmom.com
+    x-oauth-token-endpoint: https://app.adsmom.com/oauth/token
+    x-oauth-authorization-endpoint: https://app.adsmom.com/oauth/authorize
+    x-oauth-registration-endpoint: https://app.adsmom.com/oauth/register
+    x-oauth-jwks-uri: https://app.adsmom.com/.well-known/jwks.json
+    x-oauth-scopes-supported: [mcp:invoke, api:read, api:write, billing:read]
+    x-protected-resource-metadata: https://app.adsmom.com/.well-known/oauth-protected-resource
+
+- target: $.paths['/api/v1/usage'].get
+  description: >-
+    getUsage is the only operation with no security requirement in the published
+    spec, but it returns 401 unauthenticated in production. Apply the scheme so
+    generated clients send a token.
+  update:
+    security:
+    - oauth: []
+    x-observed-unauthenticated-status: 401
+
+- target: $
+  description: >-
+    Record the runtime semantics API Evangelist observed on the wire that the
+    contract does not state. These are document-level annotations, not schema
+    changes.
+  update:
+    x-error-format: rfc9457
+    x-error-media-type: application/problem+json
+    x-error-fallback-media-type: application/json
+    x-error-catalog: errors/adsmom-inc-problem-types.yml
+    x-request-id-header: x-request-id
+    x-pagination-style: cursor
+    x-pagination-params: [cursor, limit]
+    x-pagination-max-limit: 25
+    x-pagination-response-cursor: undeclared
+    x-idempotency-supported: false
+    x-rate-limit-headers: none
+    x-rate-limit-discovery-operation: getUsage
+    x-signed-media-url-ttl: ~10 minutes (media_url and thumbnail_url expire; re-hydrate rather than cache)
+    x-mcp-endpoint: https://api.adsmom.com/mcp
+    x-conventions: conventions/adsmom-inc-conventions.yml
+    x-data-model: data-model/adsmom-inc-data-model.yml
+    x-rate-limits: rate-limits/adsmom-inc-rate-limits.yml
+    x-authentication: authentication/adsmom-inc-authentication.yml
+
+x-gaps-not-fixable-by-overlay:
+- No 4xx/5xx responses are declared on any of the 78 operations. An overlay could
+  bolt a Problem schema onto every response, but the scorer parses the ORIGINAL
+  spec, and inventing declared error bodies Adsmom has not published would
+  misrepresent the contract. This is a provider fix, not an overlay fix.
+- No operation-level request/response examples exist. Schema-level `example`
+  values are present on many properties and are real; operation examples are not.
+- The list operations return bare arrays, so a next-cursor cannot be added
+  without changing the response shape the API actually returns.

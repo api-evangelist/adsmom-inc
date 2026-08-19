@@ -57,3 +57,21 @@ plans:
   - REST API access
   - MCP access
   - Custom Integrations
+
+x-recheck:
+  checked: '2026-08-13'
+  finding: >-
+    https://adsmom.com/pricing now returns HTTP 302 to https://adsmom.com/demo,
+    and /pricing is absent from https://adsmom.com/sitemap.xml. The tiered EUR
+    pricing recorded above was published and captured on 2026-07-17; Adsmom has
+    since moved to a book-a-demo motion and no longer publishes plan prices.
+    The plans are retained here as the last published state and must be read as
+    of 2026-07-17, not as current list pricing.
+  evidence:
+  - {url: 'https://adsmom.com/pricing', status: 302, location: 'https://adsmom.com/demo'}
+  - {url: 'https://adsmom.com/sitemap.xml', status: 200, note: '33 URLs; no /pricing entry'}
+  still_true: >-
+    "API + MCP access included on all paid tiers" remains consistent with
+    https://adsmom.com/product/api, and the credit/tracked-advertiser quotas are
+    corroborated by the getUsage response shape in the OpenAPI (credits.limit,
+    tracked_advertisers).

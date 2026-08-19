@@ -1,0 +1,70 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://app.adsmom.com/.well-known/oauth-authorization-server (RFC 8414, HTTP 200,
+  scopes_supported) + https://app.adsmom.com/.well-known/oauth-protected-resource
+  and .../oauth-protected-resource/mcp (RFC 9728, HTTP 200)
+docs: null
+docs_note: >-
+  Adsmom publishes no scope-reference page. https://adsmom.com/product/api describes
+  the auth model in prose only and sends the reader to the Integrations section of a
+  logged-in account. Every scope string below is read verbatim from the provider's own
+  anonymous OAuth discovery documents — not from documentation, and not inferred.
+provider: Adsmom
+issuer: https://app.adsmom.com
+authorization_endpoint: https://app.adsmom.com/oauth/authorize
+token_endpoint: https://app.adsmom.com/oauth/token
+scope_count: 4
+
+scopes:
+- name: mcp:invoke
+  description: >-
+    Invoke tools on the Adsmom MCP server. The only scope advertised by either
+    protected-resource document, and the scope an MCP client (Claude, Codex,
+    Cursor, Gemini) requests when connecting.
+  surfaces:
+  - mcp
+  advertised_by:
+  - /.well-known/oauth-authorization-server
+  - /.well-known/oauth-protected-resource
+  - /.well-known/oauth-protected-resource/mcp
+- name: api:read
+  description: >-
+    Read access to the REST API. Maps to the 66 GET operations in the OpenAPI —
+    Explore (ad listing, hydration, detail, reach/impression timeseries,
+    snapshots), Insights reads (tracked advertisers/accounts, AI summaries,
+    weekly reports) and all of Analytics.
+  surfaces:
+  - rest
+  advertised_by:
+  - /.well-known/oauth-authorization-server
+- name: api:write
+  description: >-
+    Write access to the REST API. Maps to the 12 mutating operations — the six
+    POST track* operations (trackMetaAdvertiser, trackTiktokAdvertiser,
+    trackGoogleAdvertiser, trackLinkedinAdvertiser, trackTiktokSocialAccount,
+    trackInstagramSocialAccount) and the six DELETE untrack* operations.
+  surfaces:
+  - rest
+  advertised_by:
+  - /.well-known/oauth-authorization-server
+- name: billing:read
+  description: >-
+    Read access to billing/entitlement state. No REST operation in the published
+    OpenAPI is billing-specific; the closest is getUsage (GET /api/v1/usage),
+    which returns plan, credits and rate limit.
+  surfaces:
+  - rest
+  advertised_by:
+  - /.well-known/oauth-authorization-server
+
+mapping_note: >-
+  The OpenAPI declares its security scheme as an HTTP bearer scheme rather than an
+  oauth2 scheme with a flows/scopes map, so no operation in the spec names a scope.
+  The surface/operation mapping above is an honest derivation from the scope names
+  and the operation verbs; Adsmom does not publish a per-operation scope table.
+
+cross_links:
+  authentication: authentication/adsmom-inc-authentication.yml
+  well_known: well-known/adsmom-inc-well-known.yml
+  openapi: openapi/adsmom-inc-openapi.json

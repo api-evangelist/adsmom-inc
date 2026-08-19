@@ -1,4 +1,4 @@
-generated: '2026-07-17'
+generated: '2026-08-13'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
@@ -7,6 +7,11 @@ hosts:
   tls_version: TLSv1.3
   cert_expires: Oct  2 08:10:53 2026 GMT
   hsts: false
+- host: api.adsmom.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  2 08:10:53 2026 GMT
+  hsts: null
 domains:
 - domain: adsmom.com
   dnssec: false

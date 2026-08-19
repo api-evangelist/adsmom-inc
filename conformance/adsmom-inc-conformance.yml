@@ -1,0 +1,166 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  Live probes on 2026-08-13 of https://api.adsmom.com and https://app.adsmom.com
+  (/.well-known/*, the /mcp JSON-RPC endpoint, and anonymous 401/404 responses)
+  plus openapi/adsmom-inc-openapi.json.
+summary: >-
+  Adsmom's conformance profile is unusually strong on the machine-readable
+  identity and agent-protocol side — OpenAPI, OAuth 2.0 with RFC 8414 and RFC
+  9728 discovery, PKCE, RFC 6750 challenges, RFC 9457 problem details, MCP over
+  streamable HTTP — and empty on the published-assurance side: no security.txt,
+  no trust center, no named certification, no compliance page.
+
+standards:
+- id: openapi
+  conforms: true
+  version: 3.0.0
+  evidence: >-
+    https://api.adsmom.com/api/v1/openapi.json returns a parsing OpenAPI 3.0.0
+    document (HTTP 200) with 66 paths, 78 operations and 110 component schemas.
+    Every operation carries a unique operationId, a summary and a tag.
+  caveats:
+  - 'servers[] is [{url: "/"}] — no host is named in the contract.'
+  - No 4xx/5xx responses are declared on any operation.
+  - No request/response examples are declared at the operation level.
+  - tags[] at the document root is empty, so the 14 tags used by operations carry no descriptions.
+
+- id: oauth2
+  conforms: true
+  evidence: >-
+    Full OAuth 2.0 authorization server at https://app.adsmom.com with
+    /oauth/authorize, /oauth/token and /oauth/register. Grants advertised:
+    authorization_code, refresh_token, client_credentials.
+
+- id: rfc8414-authorization-server-metadata
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-authorization-server returns valid metadata (HTTP 200) on
+    both api.adsmom.com and app.adsmom.com, plus an MCP-scoped variant at
+    /.well-known/oauth-authorization-server/mcp.
+
+- id: rfc9728-protected-resource-metadata
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-protected-resource returns valid metadata (HTTP 200), and
+    the 401 challenges on both the REST API and the MCP endpoint carry a
+    resource_metadata parameter pointing at it — the full RFC 9728 discovery loop.
+  caveat: >-
+    The MCP-scoped document lists authorization_servers as
+    ["https://app.adsmom.com/mcp"], which is the resource, not the issuer. The
+    root document and the issuer claim both say https://app.adsmom.com. Minor
+    inconsistency; a strict client following the MCP document alone would look
+    for metadata at the wrong base.
+
+- id: oauth2-pkce
+  conforms: true
+  evidence: code_challenge_methods_supported is ["S256"] — PKCE offered, and S256 is the only method.
+
+- id: rfc7591-dynamic-client-registration
+  conforms: true
+  evidence: registration_endpoint https://app.adsmom.com/oauth/register is advertised in the authorization-server metadata.
+
+- id: rfc6750-bearer-token
+  conforms: true
+  evidence: >-
+    Both surfaces return WWW-Authenticate: Bearer on a 401 — the REST API with a
+    resource_metadata parameter, the MCP endpoint with realm="mcp" plus
+    resource_metadata.
+
+- id: rfc9457-problem-details
+  conforms: true
+  evidence: >-
+    GET https://api.adsmom.com/api/v1/usage returns content-type
+    application/problem+json with type/title/status/detail/instance plus a
+    request_id extension member.
+  caveat: >-
+    Partial. Unrouted paths fall through to an Express default envelope
+    ({"message","error","statusCode"}) as application/json, so two error shapes
+    ship from one host, and NEITHER is declared in the OpenAPI.
+
+- id: mcp
+  conforms: true
+  version: streamable HTTP
+  evidence: >-
+    First-party hosted MCP server at https://api.adsmom.com/mcp; JSON-RPC POST
+    returns a spec-correct 401 OAuth challenge with MCP-scoped protected-resource
+    metadata. Documented on https://adsmom.com/product/api for Claude, Codex,
+    Cursor and Gemini.
+
+- id: oidc-discovery
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on all three hosts. OAuth 2.0 only; no OpenID Connect.
+
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on adsmom.com, api.adsmom.com and app.adsmom.com.
+
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog returns 404 on all hosts; the OpenAPI is discoverable only by guessing its path.
+
+- id: a2a-agent-card
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json both 404 on all three hosts.
+
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header is documented; no deprecation policy is published. See lifecycle/adsmom-inc-lifecycle.yml.
+
+- id: ratelimit-headers
+  conforms: false
+  evidence: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After header observed on anonymous
+    responses. Rate-limit state is exposed as data via getUsage instead. See
+    rate-limits/adsmom-inc-rate-limits.yml.
+
+- id: cursor-pagination
+  conforms: partial
+  evidence: >-
+    The four list* operations accept `cursor` and `limit` (max 25) query
+    parameters, but the 200 responses are bare arrays with no envelope, so no
+    next-cursor is returned or declared. Input side only.
+
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header or equivalent anywhere in the 78-operation spec or
+    the product documentation. See conventions/adsmom-inc-conventions.yml.
+
+- id: dnssec
+  conforms: false
+  evidence: 'adsmom.com: no DNSKEY. See security/adsmom-inc-domain-security.yml.'
+
+- id: hsts
+  conforms: false
+  evidence: 'No Strict-Transport-Security header observed on adsmom.com or api.adsmom.com.'
+
+- id: caa
+  conforms: false
+  evidence: No CAA records published for adsmom.com.
+
+- id: dmarc
+  conforms: partial
+  evidence: 'DMARC record present with p=none — monitoring only, no enforcement. SPF present (zohomail.eu + _spf.google.com, ~all).'
+
+compliance:
+  certifications_published: []
+  trust_center: null
+  compliance_page: null
+  evidence: >-
+    probe-security-programs.py returned vdp=none trust=none on 2026-08-13. No
+    SOC 2, ISO 27001, PCI, HIPAA or GDPR-attestation claim appears on adsmom.com,
+    which is notable for a Latvian (EU) company processing platform ad data.
+    The privacy policy at https://adsmom.com/privacy is the only assurance
+    artifact published.
+  note: >-
+    NO Compliance pointer is emitted in apis.yml — there is no published
+    certification or compliance program to point at.
+
+cross_links:
+  authentication: authentication/adsmom-inc-authentication.yml
+  scopes: scopes/adsmom-inc-scopes.yml
+  well_known: well-known/adsmom-inc-well-known.yml
+  errors: errors/adsmom-inc-problem-types.yml
+  lifecycle: lifecycle/adsmom-inc-lifecycle.yml
+  domain_security: security/adsmom-inc-domain-security.yml

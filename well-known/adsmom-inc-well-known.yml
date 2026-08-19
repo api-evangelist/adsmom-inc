@@ -1,0 +1,100 @@
+generated: '2026-08-13'
+method: searched
+source: live probes of /.well-known/ across every Adsmom host in apis.yml
+checked: '2026-08-13'
+summary: >-
+  Adsmom serves real RFC 8414 authorization-server metadata and RFC 9728
+  protected-resource metadata, on both the API host and the app host, including
+  MCP-scoped variants at the .../mcp suffix. It serves no security.txt, no
+  api-catalog, no ai-plugin.json, no OIDC discovery document and no A2A agent
+  card. The marketing host (adsmom.com) and the app host answer /.well-known/*
+  misses with an HTML 404 page from the Next.js app, not a bare 404 — those are
+  recorded as 404 below because the status line, not the body, is the fact.
+
+hosts:
+- host: https://api.adsmom.com
+  documents:
+  - path: /.well-known/oauth-authorization-server   # RFC 8414
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource     # RFC 9728
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-oauth-protected-resource.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://app.adsmom.com
+  documents:
+  - path: /.well-known/oauth-authorization-server   # RFC 8414
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-oauth-authorization-server.json
+  - path: /.well-known/oauth-authorization-server/mcp
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-mcp-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource     # RFC 9728
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-oauth-protected-resource.json
+  - path: /.well-known/oauth-protected-resource/mcp
+    status: 200
+    content_type: application/json
+    file: adsmom-inc-mcp-oauth-protected-resource.json
+  - path: /.well-known/jwks.json
+    status: 200
+    content_type: application/json
+    note: JWKS for verifying the bearer JWTs; not saved verbatim (rotating key material).
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://adsmom.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+
+gaps:
+- No RFC 9116 /.well-known/security.txt on any host — nothing advertises a
+  vulnerability-disclosure contact or policy.
+- No /.well-known/api-catalog (RFC 9727); the OpenAPI is discoverable only at
+  https://api.adsmom.com/api/v1/openapi.json, which nothing links to.
+- No A2A agent card at either the canonical or the legacy path.
+
+cross_links:
+  authentication: authentication/adsmom-inc-authentication.yml
+  scopes: scopes/adsmom-inc-scopes.yml
+  mcp: mcp/adsmom-inc-mcp.yml

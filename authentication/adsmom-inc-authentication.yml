@@ -1,0 +1,116 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://app.adsmom.com/.well-known/oauth-authorization-server (RFC 8414, HTTP 200)
+  + https://app.adsmom.com/.well-known/oauth-protected-resource (RFC 9728, HTTP 200)
+  + https://app.adsmom.com/.well-known/oauth-protected-resource/mcp (HTTP 200)
+  + openapi/adsmom-inc-openapi.json securitySchemes
+  + observed 401 challenges on https://api.adsmom.com/api/v1/usage and https://api.adsmom.com/mcp
+docs: https://adsmom.com/product/api
+summary:
+  model: oauth2
+  types:
+  - http
+  - oauth2
+  note: >-
+    The OpenAPI declares a single scheme — `oauth`, an HTTP bearer scheme with
+    bearerFormat JWT — and applies it to 77 of 78 operations. The spec understates
+    the real model: the token is issued by a full OAuth 2.0 authorization server
+    at app.adsmom.com that publishes RFC 8414 metadata anonymously. Both the REST
+    API and the MCP server answer unauthenticated requests with an RFC 6750
+    WWW-Authenticate challenge carrying `resource_metadata`, so a client can
+    discover the whole auth model from the 401 alone.
+
+schemes:
+- name: oauth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  applied_to: >-
+    77 of 78 operations declare `security: [{oauth: []}]`. getUsage
+    (GET /api/v1/usage) declares no security in the spec but answers 401
+    unauthenticated in production — a spec defect, not an open endpoint.
+  sources:
+  - openapi/adsmom-inc-openapi.json
+
+authorization_server:
+  issuer: https://app.adsmom.com
+  authorization_endpoint: https://app.adsmom.com/oauth/authorize
+  token_endpoint: https://app.adsmom.com/oauth/token
+  registration_endpoint: https://app.adsmom.com/oauth/register
+  jwks_uri: https://app.adsmom.com/.well-known/jwks.json
+  grant_types_supported:
+  - authorization_code
+  - refresh_token
+  - client_credentials
+  response_types_supported:
+  - code
+  code_challenge_methods_supported:
+  - S256
+  token_endpoint_auth_methods_supported:
+  - none
+  - client_secret_post
+  scopes_supported:
+  - mcp:invoke
+  - api:read
+  - api:write
+  - billing:read
+  authorization_response_iss_parameter_supported: true
+  dynamic_client_registration: true
+  file: well-known/adsmom-inc-oauth-authorization-server.json
+
+protected_resources:
+- resource: https://app.adsmom.com
+  authorization_servers:
+  - https://app.adsmom.com
+  scopes_supported:
+  - mcp:invoke
+  file: well-known/adsmom-inc-oauth-protected-resource.json
+- resource: https://app.adsmom.com/mcp
+  authorization_servers:
+  - https://app.adsmom.com/mcp
+  scopes_supported:
+  - mcp:invoke
+  file: well-known/adsmom-inc-mcp-oauth-protected-resource.json
+  note: >-
+    The MCP-scoped protected-resource document names its own `mcp` path as the
+    authorization server; the root document and the WWW-Authenticate challenge
+    both name https://app.adsmom.com. Treat the issuer as https://app.adsmom.com.
+
+challenges:
+- surface: REST
+  url: https://api.adsmom.com/api/v1/usage
+  http_status: 401
+  content_type: application/problem+json
+  www_authenticate: Bearer resource_metadata="https://app.adsmom.com/.well-known/oauth-protected-resource"
+- surface: MCP
+  url: https://api.adsmom.com/mcp
+  http_status: 401
+  content_type: application/json
+  www_authenticate: Bearer realm="mcp", resource_metadata="https://app.adsmom.com/.well-known/oauth-protected-resource/mcp"
+
+flows:
+- name: client_credentials
+  use: server-to-server REST access (pipelines, internal tools, scheduled jobs)
+  evidence: >-
+    `client_credentials` is listed in grant_types_supported on the root
+    authorization-server metadata, and the OpenAPI info.description says
+    "Authenticate with OAuth 2.0 client_credentials".
+- name: authorization_code
+  use: interactive MCP client connection (Claude, Codex, Cursor, Gemini)
+  pkce: required (S256 is the only code_challenge_method offered)
+  evidence: >-
+    The /mcp-scoped authorization-server metadata offers only authorization_code
+    + refresh_token with token_endpoint_auth_methods_supported ["none"], the
+    public-client shape MCP clients use.
+
+credentials:
+  provisioning: >-
+    Created by the account holder from the Integrations section of
+    https://app.adsmom.com/. Not self-service outside a paid plan — API and MCP
+    access are included on all paid tiers (see plans/adsmom-inc-plans.yml).
+  rotation: not documented publicly
+  cross_links:
+    scopes: scopes/adsmom-inc-scopes.yml
+    well_known: well-known/adsmom-inc-well-known.yml
+    conventions: conventions/adsmom-inc-conventions.yml

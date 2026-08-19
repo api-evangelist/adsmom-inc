@@ -1,0 +1,92 @@
+generated: '2026-08-13'
+method: probed
+format: rfc9457
+source: >-
+  Observed live on https://api.adsmom.com/api/v1/usage (HTTP 401,
+  content-type application/problem+json) and https://api.adsmom.com/api/v1/nope
+  (HTTP 404) on 2026-08-13, plus the response declarations in
+  openapi/adsmom-inc-openapi.json.
+rfc9457: true
+rfc9457_note: >-
+  The Adsmom REST API returns RFC 9457 problem details on authenticated routes —
+  content-type application/problem+json with type/title/status/detail/instance —
+  and adds a non-standard `request_id` member that matches the `x-request-id`
+  response header. This is real, observed, and better than most catalog entries.
+  It is, however, entirely undeclared: the OpenAPI declares ONLY success
+  responses (66x 200, 6x 201, 6x 204) on all 78 operations and defines no error
+  schema, so a generated client has no error contract at all.
+
+spec_gap:
+  declared_response_codes: [200, 201, 204]
+  declared_error_codes: []
+  problem_schema_in_spec: false
+  impact: >-
+    Every 4xx/5xx an integrator will actually hit is absent from the contract.
+    Adding a shared Problem schema and default/4xx responses to the OpenAPI is
+    the single highest-value contract fix available to Adsmom.
+
+envelope:
+  media_type: application/problem+json
+  observed_example_shape: >-
+    {"type":"https://api.adsmom.com/errors/<slug>","title":"<Title>",
+    "status":<int>,"detail":"<machine_reason>","instance":"<request path>",
+    "request_id":"<uuid>"}
+  members:
+  - {name: type, type: uri, required: true, description: 'Dereferenceable-looking problem type URI under https://api.adsmom.com/errors/. The URI itself was not fetched.'}
+  - {name: title, type: string, required: true, description: Short human-readable summary of the problem type.}
+  - {name: status, type: integer, required: true, description: HTTP status code, duplicated in the body per RFC 9457.}
+  - {name: detail, type: string, required: true, description: 'Machine-ish reason string (e.g. missing_token) rather than a human sentence.'}
+  - {name: instance, type: string, required: true, description: The request path that produced the problem.}
+  - {name: request_id, type: string (uuid), required: true, extension: true, description: 'Correlation id; equals the x-request-id response header. Quote it in support requests.'}
+
+fallback_envelope:
+  media_type: application/json
+  applies_to: unrouted paths and unsupported methods (framework-level 404s)
+  observed_example_shape: '{"message":"Cannot GET /api/v1/nope","error":"Not Found","statusCode":404}'
+  note: >-
+    Express/NestJS default. NOT problem+json, and it echoes the request method
+    and path back into `message`. Two different error envelopes ship from the
+    same host, so a client must branch on content-type rather than assume one
+    shape.
+
+problems:
+- status: 401
+  type: https://api.adsmom.com/errors/unauthorized
+  title: Unauthorized
+  media_type: application/problem+json
+  observed: true
+  detail_values_seen: [missing_token]
+  meaning: >-
+    No bearer token, or a token that failed validation. The response also carries
+    WWW-Authenticate: Bearer resource_metadata="https://app.adsmom.com/.well-known/oauth-protected-resource".
+  remediation: >-
+    Fetch the protected-resource metadata named in the WWW-Authenticate header,
+    then get a token from https://app.adsmom.com/oauth/token
+    (client_credentials for server-to-server). See
+    authentication/adsmom-inc-authentication.yml.
+- status: 404
+  title: Not Found
+  media_type: application/json
+  observed: true
+  meaning: Unrouted path or unsupported method on a valid path.
+  remediation: >-
+    Check the method and path against openapi/adsmom-inc-openapi.json. Note that
+    an unsupported method on an existing path returns 404, not 405.
+  note: Framework-level 404s use the Express envelope, not problem+json.
+
+undeclared_and_unobserved:
+  note: >-
+    The following are reachable only with a valid token and are therefore neither
+    declared in the spec nor observable anonymously. They are listed as KNOWN
+    UNKNOWNS, not as facts, and carry no example shape.
+  expected_but_unverified:
+  - {status: 403, reason: token lacks the api:read / api:write / mcp:invoke scope for the operation}
+  - {status: 404, reason: 'tracked advertiser / ad id_token / snapshot_uuid not found (path params are opaque id tokens)'}
+  - {status: 422, reason: invalid query parameter (e.g. limit above the documented max of 25, bad enum value)}
+  - {status: 429, reason: 'rate limit or AI-credit exhaustion — see rate-limits/adsmom-inc-rate-limits.yml; no Retry-After or RateLimit-* header was observed anonymously'}
+
+cross_links:
+  openapi: openapi/adsmom-inc-openapi.json
+  authentication: authentication/adsmom-inc-authentication.yml
+  conventions: conventions/adsmom-inc-conventions.yml
+  rate_limits: rate-limits/adsmom-inc-rate-limits.yml

@@ -1,0 +1,163 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  Derived by aligning the five capabilities Adsmom publishes in prose on
+  https://adsmom.com/product/api with the live REST OpenAPI at
+  openapi/adsmom-inc-openapi.json (OpenAPI 3.0.0, 66 paths, 78 operations,
+  110 schemas). The live MCP tool manifest is OAuth-gated (tools/list returns
+  401 missing_token), so no tool name below is a verified tool identifier.
+purpose: >-
+  Bind each advertised MCP capability to the REST operation(s) that back it, so
+  the divergence between Adsmom's three surfaces is recorded rather than assumed
+  away. The headline finding is REST-heavy asymmetry: the REST API exposes 78
+  operations, the MCP server advertises five capabilities, and one of those five
+  (saved collections) has no REST equivalent at all.
+
+surfaces:
+  rest_openapi:
+    file: openapi/adsmom-inc-openapi.json
+    endpoint: https://api.adsmom.com
+    gated: false
+    note: Spec is served anonymously at https://api.adsmom.com/api/v1/openapi.json.
+  mcp:
+    endpoint: https://api.adsmom.com/mcp
+    gated: true
+    note: tools/list requires an OAuth bearer token with scope mcp:invoke.
+  graphql:
+    endpoint: https://api.adsmom.com/graphql
+    gated: false
+    documented: false
+    note: >-
+      An undocumented GraphQL endpoint answers on the same host. It is the
+      application back end for app.adsmom.com, not a published developer product;
+      it appears in no Adsmom documentation, pricing tier or llms.txt. Recorded
+      for surface completeness only — no SDL is captured into this repo and no
+      GraphQL pointer is emitted in apis.yml.
+
+confidence_note: >-
+  Because the MCP manifest is gated, every `tool` value below is the capability
+  label Adsmom publishes, NOT an identifier read from tools/list. Confidence
+  reflects how tightly the published capability text maps onto named REST
+  operations. No row is marked high.
+
+crosswalk:
+- tool: Search the ad index
+  category: search
+  rest: [listMetaAds, listTiktokAds, listGoogleAds, listLinkedinAds]
+  binding: rest
+  confidence: medium
+  note: >-
+    "Query competitor ads across your tracked pages by brand, platform, format,
+    and date" maps cleanly onto the four list* operations and their shared
+    advertiser_id / query / format / started_after / sort parameters. Which of
+    the four a tool call routes to is presumably driven by a platform argument.
+
+- tool: Pull creatives & detail
+  category: lookup
+  rest: [getMetaAd, getTiktokAd, getGoogleAd, getLinkedinAd]
+  binding: rest
+  confidence: medium
+  note: >-
+    "Fetch full ad detail, targeting, and the underlying creative assets."
+    Targeting is returned only with include=full_targeting; media URLs are signed
+    and expire in ~10 minutes, so an agent must use them immediately rather than
+    hand them on. The batch-hydration path (`ids`, max 25) on the list*
+    operations is the plausible bulk equivalent.
+
+- tool: Analyze reach
+  category: analytics
+  rest: [getMetaAdReach, batchMetaAdReach, getTiktokAdReach, batchTiktokAdReach, getLinkedinAdImpressions, batchLinkedinAdImpressions, getMetaReach, getMetaReachRegions, getTiktokReach, getTiktokReachRegions, getMetaAdvertiserWeeklyReport, getTiktokAdvertiserWeeklyReport, getGoogleAdvertiserWeeklyReport, getLinkedinAdvertiserWeeklyReport]
+  binding: rest
+  confidence: medium
+  note: >-
+    "Daily reach and weekly breakdowns" spans two REST families — per-ad reach
+    timeseries (Explore) and per-advertiser reach analytics plus the weekly
+    report operations (Insights/Analytics). Google has no per-ad reach path;
+    its equivalent is impressions inside getGoogleActivity.
+
+- tool: Follow activity timelines
+  category: analytics
+  rest: [getMetaActivity, getTiktokActivity, getGoogleActivity, listTiktokAdSnapshots, getTiktokAdAtSnapshot, listLinkedinAdSnapshots, getLinkedinAdAtSnapshot]
+  binding: rest
+  confidence: low
+  note: >-
+    "Track when a competitor launched, changed, or stopped ads" is served two
+    ways in REST — the *Activity charts (new + active ad counts over time) and
+    the snapshot operations (point-in-time captures, TikTok and LinkedIn only).
+    The published text does not say which the tool returns, so this row is a
+    semantic mapping, not an observed binding.
+
+- tool: Work with collections
+  category: collections
+  rest: []
+  binding: none
+  confidence: low
+  note: >-
+    See mcp_only below. This is the one advertised MCP capability with no REST
+    counterpart.
+
+mcp_only:
+- tool: Work with collections
+  reason: >-
+    "Read the ad collections you've saved in Adsmom so your assistant can build
+    on work you've already done." No collection, folder, board or saved-search
+    resource exists anywhere in the 66-path REST spec. Saved collections are a
+    platform (app.adsmom.com) concept the MCP server can read and the REST API
+    cannot. A team standardising on REST cannot reach their own saved work.
+
+rest_only:
+- group: Insights — advertiser and account lifecycle
+  operations: [trackMetaAdvertiser, untrackMetaAdvertiser, trackTiktokAdvertiser, untrackTiktokAdvertiser, trackGoogleAdvertiser, untrackGoogleAdvertiser, trackLinkedinAdvertiser, untrackLinkedinAdvertiser, trackTiktokSocialAccount, untrackTiktokSocialAccount, trackInstagramSocialAccount, untrackInstagramSocialAccount, listMetaAdvertisers, getMetaAdvertiser, listTiktokAdvertisers, getTiktokAdvertiser, listGoogleAdvertisers, getGoogleAdvertiser, listLinkedinAdvertisers, getLinkedinAdvertiser, listTiktokSocialAccounts, getTiktokSocialAccount, listInstagramSocialAccounts, getInstagramSocialAccount]
+  reason: >-
+    All 12 mutating operations in the API are REST-only as far as anything
+    published says. No advertised MCP capability mentions tracking or untracking
+    an advertiser, so an agent connected over MCP appears to be read-only —
+    plausibly deliberate, but nowhere stated.
+- group: Insights — AI summaries
+  operations: [getMetaAdvertiserSummary, getTiktokAdvertiserSummary, getGoogleAdvertiserSummary, getLinkedinAdvertiserSummary, getTiktokSocialAccountSummary, getInstagramSocialAccountSummary]
+  reason: >-
+    The Sense AI summary operations are not named in the MCP capability list,
+    though an assistant asking a strategic question is the obvious consumer.
+- group: Analytics — share of voice, runtime, creative mix, targeting, regions
+  operations: [getMetaShareOfVoice, getMetaRegions, getMetaTargeting, getMetaTopAds, getTiktokShareOfVoice, getTiktokRegions, getTiktokRuntime, getTiktokTargeting, getTiktokCreative, getTiktokCreativeDimension, getGoogleShareOfVoice, getGoogleRegions, getGoogleRuntime, getGoogleCreative, getGoogleCreativeDimension, getGoogleStats]
+  reason: >-
+    16 analytics operations — the Lorenz/Gini concentration curves, runtime
+    distributions, creative-mix breakdowns and targeting overlap — have no
+    advertised MCP capability. This is the largest single block of REST-only
+    functionality.
+- group: Account
+  operations: [getUsage]
+  reason: >-
+    Plan, credit balance and the per-minute rate limit. Notable because it is the
+    only way to read the rate limit at all (no RateLimit-* headers are returned),
+    so an MCP client has no published way to see its own budget.
+- group: Organic (TikTok + Instagram)
+  operations: [getTiktokSocialAccountWeeklyReport, getInstagramSocialAccountWeeklyReport]
+  reason: The MCP capability text mentions only paid ads; organic accounts are REST-only.
+
+coverage:
+  rest_operations_total: 78
+  mcp_capabilities_advertised: 5
+  mcp_capabilities_bound_to_rest: 4
+  mcp_only: 1
+  rest_operations_with_an_advertised_mcp_capability: 29
+  rest_operations_with_no_advertised_mcp_capability: 49
+  note: >-
+    Counts are of ADVERTISED capabilities against DECLARED operations. Because
+    tools/list is gated, the real MCP tool count is unknown and may be much
+    higher than five — this crosswalk measures what Adsmom publishes, which is
+    the only thing a prospective integrator can measure either.
+
+gaps_for_the_provider:
+- Publish the MCP tool list (names + descriptions + inputSchemas) somewhere
+  anonymous — a docs page or the llms.txt — so the server can be evaluated
+  before signup.
+- Say whether the MCP surface is read-only. Twelve REST mutations have no MCP
+  analogue and nothing states that this is intentional.
+- Expose saved collections over REST, or state that they are MCP-only.
+
+cross_links:
+  mcp: mcp/adsmom-inc-mcp.yml
+  openapi: openapi/adsmom-inc-openapi.json
+  authentication: authentication/adsmom-inc-authentication.yml
+  scopes: scopes/adsmom-inc-scopes.yml

@@ -1,0 +1,57 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  Unauthenticated registry probes on 2026-08-13, plus
+  https://adsmom.com/product/api and https://api.github.com/users/adsmom.
+package_count: 0
+official_sdk_count: 0
+summary: >-
+  Adsmom ships no client libraries in any language. There is no SDK, no CLI, no
+  stdio MCP package, and no public source. Integrators call the REST API
+  directly, or connect the hosted MCP server, which needs no installed package.
+
+packages: []
+
+registries_probed:
+- {registry: npm, query: 'adsmom (registry search)', result: 0 results, status: 200}
+- {registry: npm, package: adsmom, status: 404}
+- {registry: npm, package: '@adsmom/sdk', status: 404}
+- {registry: npm, package: '@adsmom/mcp', status: 404}
+- {registry: npm, package: adsmom-sdk, status: 404}
+- {registry: npm, package: adsmom-mcp, status: 404}
+- {registry: pypi, package: adsmom, status: 404}
+- {registry: pypi, package: adsmom-sdk, status: 404}
+- {registry: rubygems, package: adsmom, status: 404}
+- {registry: packagist, package: adsmom/adsmom, status: 404}
+- {registry: crates.io, package: adsmom, status: 403, note: 'crates.io rejects unauthenticated non-browser agents; treated as inconclusive, but no Rust SDK is referenced anywhere in Adsmom documentation.'}
+
+source_repositories:
+  github_org: https://github.com/adsmom
+  github_org_exists: true
+  public_repos: 0
+  checked: '2026-08-13'
+  note: >-
+    The GitHub organisation is registered and linked from apis.yml but publishes
+    nothing. No SDK, no examples, no Postman collection, no .proto.
+
+docs_evidence: >-
+  https://adsmom.com/product/api describes two integration paths only —
+  "Connect your AI assistant over MCP" and "call the REST API from your own
+  code" — and points the reader to the Integrations section of a logged-in
+  account for credentials and endpoints. No SDK, sample repo or client library
+  is offered on any public page.
+
+implications:
+- Every REST integrator hand-rolls a client. The published OpenAPI makes
+  generation possible (78 operations, unique operationIds, 110 schemas), but the
+  hostless servers[] block means a generated client will not compile against a
+  base URL without the fix in overlays/adsmom-inc-openapi-overlay.yaml.
+- No SDKs pointer is emitted in apis.yml. An empty package list is an honest
+  zero, not an SDK surface.
+- The MCP server is remote-only, so the absence of a package does NOT block
+  agent access — this is a REST-side gap, not an agent-side one.
+
+cross_links:
+  openapi: openapi/adsmom-inc-openapi.json
+  overlay: overlays/adsmom-inc-openapi-overlay.yaml
+  mcp: mcp/adsmom-inc-mcp.yml

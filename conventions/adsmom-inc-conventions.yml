@@ -1,0 +1,174 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  Derived from openapi/adsmom-inc-openapi.json (OpenAPI 3.0.0, 66 paths, 78
+  operations, 110 schemas) plus live anonymous probes of https://api.adsmom.com
+  on 2026-08-13 (401/404 responses and their headers) and the prose on
+  https://adsmom.com/product/api.
+summary: >-
+  Cross-cutting request/response semantics for the Adsmom REST API. Everything
+  here is either read out of the published spec or observed on the wire.
+  Idempotency is NOT supported and NOT documented — do not assume it.
+
+base_url: https://api.adsmom.com
+base_url_note: >-
+  The published spec declares `servers: [{url: "/"}]` — a relative server that
+  names no host. The real host is api.adsmom.com, established by the fact that
+  the spec is served from https://api.adsmom.com/api/v1/openapi.json and that
+  every declared path (/api/v1/...) resolves there. overlays/ records the
+  concrete server without mutating the harvested spec.
+
+versioning:
+  style: uri-path
+  current: v1
+  pattern: /api/v1/<domain>/<platform>/<resource>
+  spec_version: '1.0'
+  note: >-
+    Version lives in the path only. No Accept-header or query-parameter
+    versioning, no version negotiation, and no dated releases.
+
+authentication:
+  style: oauth2_bearer
+  header: 'Authorization: Bearer <JWT>'
+  scheme_name_in_spec: oauth
+  see: authentication/adsmom-inc-authentication.yml
+
+pagination:
+  style: cursor
+  params:
+    cursor: Opaque pagination cursor (query, string)
+    limit: Page size (query, number, default 25, maximum 25)
+  applies_to: >-
+    The four list* Explore operations (listMetaAds, listTiktokAds,
+    listGoogleAds, listLinkedinAds).
+  response_fields: null
+  response_fields_note: >-
+    The 200 responses for the list operations are bare JSON ARRAYS of
+    *AdSummary objects — there is no envelope, so no next_cursor / has_more
+    field is returned in the body and none is declared. How a client obtains
+    the next cursor is not described anywhere in the published contract. This is
+    a real gap: cursor pagination is offered as an input with no documented
+    output.
+  batch_hydration:
+    param: ids
+    max: 25
+    note: >-
+      Comma-separated ad id tokens. When `ids` is set, filters and pagination
+      are ignored (stated verbatim in the spec parameter description).
+
+filtering_and_sorting:
+  common_query_params:
+  - {name: advertiser_id, note: filter to one tracked advertiser by id token}
+  - {name: advertiser_ids, note: multi-advertiser filter on Analytics operations}
+  - {name: query, note: free-text search across creative text}
+  - {name: active, note: 'true | false — active vs ended ads'}
+  - {name: started_after, note: created on/after (ISO 8601)}
+  - {name: updated_after, note: ingested on/after (ISO 8601)}
+  - {name: date_from, note: window start on Analytics operations}
+  - {name: date_to, note: window end on Analytics operations}
+  - {name: from, note: window start on some timeseries operations}
+  - {name: to, note: window end on some timeseries operations}
+  - {name: granularity, note: timeseries bucket size}
+  - {name: region_codes, note: region filter on reach/targeting operations}
+  - {name: week_start, note: week selector on the weekly report operations}
+  - {name: include, note: response expansion selector}
+  - {name: format, enum: [video, image]}
+  - {name: sort, enum: [newest, oldest, reach_desc]}
+  note: >-
+    Date parameters are typed `string` in the spec with an ISO 8601 hint in the
+    description rather than `format: date` / `date-time`.
+
+field_expansion:
+  supported: partial
+  param: include
+  note: >-
+    An `include` query parameter appears on several operations, but the spec
+    declares it as a plain string with no enum of expandable relations.
+
+identifiers:
+  style: opaque id tokens
+  path_params: [id_token, snapshot_uuid, dimension]
+  note: >-
+    Ads, advertisers and organic accounts are addressed by `id_token`, an opaque
+    string — not by the underlying Meta/TikTok/Google/LinkedIn platform id.
+    Snapshots are addressed by `snapshot_uuid`. See
+    data-model/adsmom-inc-data-model.yml.
+
+idempotency:
+  supported: false
+  documented: false
+  header: null
+  evidence: >-
+    No Idempotency-Key (or equivalent) parameter or header appears anywhere in
+    the 78-operation spec, and https://adsmom.com/product/api does not mention
+    idempotency. The six POST track* operations return 201 and are the only
+    creating operations; a retried track* call has no documented dedupe
+    behaviour. The six DELETE untrack* operations return 204 and are naturally
+    idempotent by verb, not by contract.
+  note: >-
+    NO Idempotency pointer is emitted in apis.yml for this provider. The
+    Conventions artifact records the ABSENCE of idempotency support, which is
+    not the same thing as supporting it.
+
+request_tracing:
+  header: x-request-id
+  direction: response
+  observed: true
+  echoed_in_body: true
+  body_member: request_id
+  note: >-
+    Every response carries an x-request-id UUID header, and problem+json bodies
+    repeat it as `request_id`. Observed on both 401 and 404 responses. No
+    inbound correlation header (traceparent / x-correlation-id) is documented.
+
+error_envelope:
+  primary: application/problem+json (RFC 9457)
+  fallback: application/json (Express default, on unrouted paths)
+  see: errors/adsmom-inc-problem-types.yml
+
+rate_limit_signaling:
+  response_headers: none observed
+  runtime_signal: >-
+    Rate limit state is exposed as DATA, not as headers: GET /api/v1/usage
+    (getUsage) returns `rate_limit.requests_per_minute` alongside credit balance
+    and plan. An agent must poll that operation rather than read RateLimit-*
+    headers off the response it already made.
+  see: rate-limits/adsmom-inc-rate-limits.yml
+
+content_negotiation:
+  request: application/json
+  response: application/json
+  compression: not documented
+  cors: 'access-control-allow-origin: * observed on api.adsmom.com'
+
+caching:
+  etag: observed on responses (weak ETags, W/"...")
+  cache_control: not observed on API responses
+  note: Cloudflare fronts the API; cf-cache-status was DYNAMIC on every probe.
+
+surfaces:
+- style: rest
+  base_url: https://api.adsmom.com
+  contract: openapi/adsmom-inc-openapi.json
+  status: published
+- style: mcp
+  endpoint: https://api.adsmom.com/mcp
+  contract: gated (tools/list requires an OAuth token)
+  status: published
+- style: graphql
+  endpoint: https://api.adsmom.com/graphql
+  status: undocumented
+  note: >-
+    A GraphQL endpoint answers on the same host and is not mentioned in any
+    Adsmom documentation, pricing tier or the llms.txt. It is the application
+    back end for app.adsmom.com, not a developer product, and no SDL is captured
+    into this repo. Recorded here only so the surface inventory is complete.
+
+cross_links:
+  authentication: authentication/adsmom-inc-authentication.yml
+  scopes: scopes/adsmom-inc-scopes.yml
+  errors: errors/adsmom-inc-problem-types.yml
+  rate_limits: rate-limits/adsmom-inc-rate-limits.yml
+  lifecycle: lifecycle/adsmom-inc-lifecycle.yml
+  data_model: data-model/adsmom-inc-data-model.yml
+  mcp: mcp/adsmom-inc-mcp.yml

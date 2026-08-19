@@ -1,0 +1,106 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/adsmom-inc-openapi.json — the Usage / UsageRateLimit / UsageCredits
+  schemas returned by getUsage (GET /api/v1/usage) — plus live anonymous header
+  probes of https://api.adsmom.com on 2026-08-13 and the per-tier AI-credit
+  quotas in plans/adsmom-inc-plans.yml.
+docs: null
+docs_note: >-
+  Adsmom publishes no rate-limit documentation page. The only public statement of
+  a limit is the shape of the getUsage response in the OpenAPI, which declares
+  the field and gives an example value but does not state the limit for any plan.
+limit_count: 1
+limit_count_note: >-
+  One limit is DESCRIBED (requests per minute, per account). Its VALUE is not
+  published — the `120` below is the spec's own `example`, not a published
+  entitlement, and is recorded as such.
+
+limits:
+- id: requests-per-minute
+  scope: per-account
+  window: 1 minute
+  limit: null
+  limit_source: unpublished
+  example_value_in_spec: 120
+  example_value_note: >-
+    `120` is the `example` on UsageRateLimit.requests_per_minute in the OpenAPI.
+    An example is illustrative, not an entitlement. Do not quote it as Adsmom's
+    rate limit.
+  discoverable_at:
+    operation: getUsage
+    path: GET /api/v1/usage
+    field: rate_limit.requests_per_minute
+  note: >-
+    The per-minute request ceiling is readable at runtime by an authenticated
+    client, per account. It is not stated on the pricing page and does not vary
+    by endpoint in anything published.
+
+quotas:
+- id: ai-credits
+  scope: per-account per billing period
+  window: billing period
+  discoverable_at:
+    operation: getUsage
+    path: GET /api/v1/usage
+    fields: [credits.used, credits.limit, credits.remaining, credits.period_start, credits.period_end]
+  by_plan:
+  - {plan: Basic, credits_per_month: 250}
+  - {plan: Business, credits_per_month: 1000}
+  - {plan: Custom, credits_per_month: 10000}
+  source: plans/adsmom-inc-plans.yml
+  note: >-
+    AI credits are the real metering unit and the only limit Adsmom has ever
+    published a number for. The spec exposes used/limit/remaining plus the
+    period window, so a client can compute burn rate without a header.
+- id: tracked-advertisers
+  scope: per-account
+  window: concurrent
+  discoverable_at:
+    operation: getUsage
+    path: GET /api/v1/usage
+    field: tracked_advertisers
+  by_plan:
+  - {plan: Basic, tracked_advertisers: 5}
+  - {plan: Business, tracked_advertisers: 50}
+  - {plan: Custom, tracked_advertisers: '200+'}
+  note: >-
+    Caps how many advertisers the six POST track* operations may hold at once.
+    Exceeding it presumably fails the track* call, but no error is declared.
+
+request_shape_caps:
+- {param: limit, applies_to: 'listMetaAds, listTiktokAds, listGoogleAds, listLinkedinAds', maximum: 25, default: 25, source: openapi}
+- {param: ids, applies_to: the same four list operations, maximum: 25, note: 'comma-separated batch hydration; when set, filters and pagination are ignored', source: openapi}
+
+response_headers:
+  ratelimit_standard: not present
+  x_ratelimit: not present
+  retry_after: not observed
+  observed_headers_on_401_and_404: [x-request-id, etag, access-control-allow-origin, cf-cache-status]
+  probed: '2026-08-13'
+  probe_note: >-
+    Headers were read from anonymous 401 and 404 responses on
+    https://api.adsmom.com/api/v1/usage and /api/v1/nope. No RateLimit-*,
+    X-RateLimit-* or Retry-After header appeared. A 200 could not be observed
+    without credentials, so this is evidence of absence on error paths, not
+    proof of absence on success paths.
+
+exhaustion_behavior:
+  status_code: undeclared
+  note: >-
+    No 429 (or any 4xx) is declared on any of the 78 operations, and none could
+    be triggered anonymously. What Adsmom returns when the per-minute limit or
+    the credit balance is exhausted is not public.
+
+gaps:
+- Rate-limit state is data, not a header — an agent must spend a request on
+  getUsage to learn its budget, and cannot back off from the response in hand.
+- No Retry-After and no declared 429 means a client has no published contract
+  for when to retry.
+- The per-minute limit value is not published for any plan.
+
+cross_links:
+  plans: plans/adsmom-inc-plans.yml
+  conventions: conventions/adsmom-inc-conventions.yml
+  errors: errors/adsmom-inc-problem-types.yml
+  openapi: openapi/adsmom-inc-openapi.json
