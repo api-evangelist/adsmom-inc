@@ -46,6 +46,20 @@ tags:
 - Ad Intelligence
 - Competitive Intelligence
 - Marketing
+- Artificial Intelligence
+- MCP
+- Software-as-a-Service
+- OpenAPI
+- REST
+- Analytics
+- Social-Media
+- agent-native
+tags_raw:
+- Company
+- Advertising
+- Ad Intelligence
+- Competitive Intelligence
+- Marketing
 - AI
 - MCP
 - SaaS
@@ -106,6 +120,10 @@ apis:
   humanURL: https://adsmom.com/product/api
   baseURL: https://api.adsmom.com/mcp
   tags:
+  - MCP
+  - Artificial Intelligence
+  - agent-native
+  tags_raw:
   - MCP
   - AI
   - Agent Native
