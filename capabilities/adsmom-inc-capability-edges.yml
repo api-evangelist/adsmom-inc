@@ -1,0 +1,155 @@
+slug: adsmom-inc
+provider: Adsmom Inc.
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Media, Entertainment & Telecom Content
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 14
+edges:
+- tag: Insights · Google
+  spec_file: adsmom-inc-insights-google-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.8
+  evidence: '"List your tracked Google advertisers" ... "AI insight summary for a tracked Google advertiser",
+    schema AdvertiserInsight'
+  reason: Operations track competitors' advertisers and produce AI insight summaries and weekly reports
+    — competitive/market intelligence on advertising activity, not the running of one's own campaigns.
+- tag: Insights · LinkedIn
+  spec_file: adsmom-inc-insights-linkedin-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.8
+  evidence: '"Track a LinkedIn advertiser" ... "AI insight summary for a tracked LinkedIn advertiser",
+    schema AdvertiserInsight'
+  reason: Surface indexes and reports on other advertisers' activity — competitive intelligence/market
+    research capability.
+- tag: Insights · Meta
+  spec_file: adsmom-inc-insights-meta-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.8
+  evidence: '"Track a Meta advertiser" ... "Weekly report for a tracked Meta advertiser", schema AdvertiserInsight'
+  reason: Competitor ad tracking with AI-decoded insight summaries is market/competitive intelligence,
+    per the vendor's stated purpose of giving 'a clear read on what competitors are running'.
+- tag: Insights · TikTok
+  spec_file: adsmom-inc-insights-tiktok-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.8
+  evidence: '"Track a TikTok advertiser" ... "AI insight summary for a tracked TikTok advertiser"'
+  reason: 'Same competitor ad-intelligence pattern: tracking rival advertisers and reporting on their
+    creative/spend behaviour.'
+- tag: Analytics · Google
+  spec_file: adsmom-inc-analytics-google-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/analytics/google/share-of-voice — 'Google reach concentration (Lorenz / Gini)
+    per advertiser'; 'Google per-advertiser creative + impression stats'
+  reason: Analytics over competitors' Google ad activity, share of voice, regions, runtime and creative
+    mix is competitive/market intelligence for the buyer's marketing function, not operation of the buyer's
+    own ad sales or delivery.
+- tag: Analytics · Meta
+  spec_file: adsmom-inc-analytics-meta-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/analytics/meta/share-of-voice — 'Meta reach concentration (Lorenz / Gini) per
+    advertiser'; GET /api/v1/analytics/meta/targeting 'Meta targeted vs excluded regions'
+  reason: Aggregated intelligence on other advertisers' Meta reach, targeting and top ads serves competitive
+    intelligence and customer/market insight, matching Market Intelligence Management.
+- tag: Analytics · TikTok
+  spec_file: adsmom-inc-analytics-tiktok-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/analytics/tiktok/share-of-voice — 'TikTok share of voice across the set'; GET
+    /api/v1/analytics/tiktok/creative 'TikTok creative mix (hook, format, audio)'
+  reason: Competitor TikTok ad activity, share-of-voice and creative-mix analytics constitute competitive
+    market intelligence rather than the vendor's or buyer's own advertising operations.
+- tag: Explore · Google Ads
+  spec_file: adsmom-inc-explore-google-ads-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/explore/google/ads listGoogleAds — 'List (or batch-hydrate) Google ads from your
+    tracked advertisers'
+  reason: Browsing an indexed library of competitors' live Google ads and their targeting is competitive
+    intelligence gathering (Market Intelligence Management), not ad trafficking or inventory management.
+- tag: Explore · LinkedIn Ads
+  spec_file: adsmom-inc-explore-linkedin-ads-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/explore/linkedin/ads — 'List (or batch-hydrate) LinkedIn ads from your tracked
+    advertisers'; 'Impression-bracket timeseries for one LinkedIn ad'
+  reason: Read-only retrieval of tracked competitors' LinkedIn ads, snapshots and impression brackets
+    is competitive/market research on advertising, mapping to Market Intelligence Management.
+- tag: Explore · Meta Ads
+  spec_file: adsmom-inc-explore-meta-ads-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/explore/meta/ads — 'List (or batch-hydrate) Meta ads from your tracked advertisers';
+    'Daily reach timeseries for one Meta ad'
+  reason: Surface exposes competitors' Meta ad creatives, targeting and reach for research purposes —
+    competitive intelligence, not management of the buyer's own campaigns or inventory.
+- tag: Explore · TikTok Ads
+  spec_file: adsmom-inc-explore-tiktok-ads-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.78
+  evidence: GET /api/v1/explore/tiktok/ads — 'List (or batch-hydrate) TikTok ads from your tracked advertisers';
+    'List point-in-time captures of one TikTok ad'
+  reason: Retrieval of tracked competitors' TikTok ads, snapshots and reach timeseries is competitive
+    intelligence and customer/market insight rather than advertising sales or trafficking operations.
+- tag: Account
+  spec_file: adsmom-inc-account-api-openapi.yml
+  capability_id: BC-4270.50
+  capability_id_l1: BC-4270
+  capability_name: API Consumption Governance
+  confidence: 0.75
+  evidence: GET /api/v1/usage getUsage — 'Current credits, rate limit, plan, and tracked-advertiser count';
+    schemas UsageCredits, UsageRateLimit
+  reason: The single operation exposes API credit consumption, rate limits and plan tier to the API consumer,
+    which is API Consumption Governance (quotas, rate limits, usage analytics mapped to plan tiers), not
+    general account or subscription management.
+- tag: Insights · Instagram Organic
+  spec_file: adsmom-inc-insights-instagram-organic-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.72
+  evidence: '"Track an Instagram Organic account" ... "Weekly organic report for a tracked Instagram Organic
+    account", schema SocialAccountInsight'
+  reason: Tracking third-party social accounts and generating insight summaries/organic performance reports
+    is competitive and market intelligence gathering; slight ambiguity vs digital/social marketing measurement.
+- tag: Insights · TikTok Organic
+  spec_file: adsmom-inc-insights-tiktok-organic-api-openapi.yml
+  capability_id: BC-400.30
+  capability_id_l1: BC-400
+  capability_name: Market Intelligence Management
+  confidence: 0.72
+  evidence: '"Track a TikTok Organic account" ... "Weekly organic report for a tracked TikTok Organic
+    account"'
+  reason: Tracked organic social account insight reporting on third parties is competitive/market intelligence;
+    some ambiguity with social marketing analytics.
