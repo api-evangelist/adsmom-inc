@@ -1,0 +1,684 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Analytics · Meta API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Analytics · Meta
+paths:
+  /api/v1/analytics/meta/reach:
+    get:
+      operationId: getMetaReach
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaReachChart'
+      security:
+      - oauth: []
+      summary: Meta reach over time, per advertiser
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/reach/regions:
+    get:
+      operationId: getMetaReachRegions
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaReachRegionsChart'
+      security:
+      - oauth: []
+      summary: Meta reach by region
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/activity:
+    get:
+      operationId: getMetaActivity
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaActivityChart'
+      security:
+      - oauth: []
+      summary: Meta new + active ad counts over time
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/regions:
+    get:
+      operationId: getMetaRegions
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaRegionsChart'
+      security:
+      - oauth: []
+      summary: Meta available regions by reach
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/share-of-voice:
+    get:
+      operationId: getMetaShareOfVoice
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaShareOfVoiceChart'
+      security:
+      - oauth: []
+      summary: Meta reach concentration (Lorenz / Gini) per advertiser
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/targeting:
+    get:
+      operationId: getMetaTargeting
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaTargetingChart'
+      security:
+      - oauth: []
+      summary: Meta targeted vs excluded regions
+      tags:
+      - Analytics · Meta
+  /api/v1/analytics/meta/top-ads:
+    get:
+      operationId: getMetaTopAds
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaTopAdsChart'
+      security:
+      - oauth: []
+      summary: Meta top ads by reach
+      tags:
+      - Analytics · Meta
+components:
+  schemas:
+    MetaTopAdRow:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0f9c…
+        id_token:
+          type: string
+          example: meta.ad.0f9c…
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        headline:
+          type:
+          - string
+          - 'null'
+        body:
+          type:
+          - string
+          - 'null'
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+        started_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-04-01'
+        ended_at:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-20'
+        total_reach:
+          type: number
+          example: 318400
+      required:
+      - gid
+      - id_token
+      - advertiser
+      - headline
+      - body
+      - thumbnail_url
+      - started_at
+      - ended_at
+      - total_reach
+    MetaTargetedRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 31
+        excluded_count:
+          type: number
+          example: 4
+        per_advertiser:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTargetingPart'
+      required:
+      - region_code
+      - ad_count
+      - excluded_count
+      - per_advertiser
+    MetaRegionReachPart:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        reach:
+          type: number
+          example: 92100
+      required:
+      - advertiser
+      - reach
+    MetaShareOfVoiceChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaShareOfVoiceSeries'
+      required:
+      - series
+    MetaReachChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachSeries'
+      required:
+      - series
+    MetaTargetingChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTargetedRegion'
+      required:
+      - regions
+    MetaShareOfVoiceSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        ad_count:
+          type: number
+          example: 124
+        total_reach:
+          type: number
+          example: 4820000
+        gini:
+          type: number
+          description: Gini coefficient (0..1).
+          example: 0.62
+        lorenz:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcentrationPoint'
+        top_reaches:
+          type: array
+          items:
+            type: number
+      required:
+      - advertiser
+      - ad_count
+      - total_reach
+      - gini
+      - lorenz
+      - top_reaches
+    MetaActivityPoint:
+      type: object
+      properties:
+        bucket_start:
+          type: string
+          example: '2026-05-08'
+        bucket_end:
+          type: string
+          example: '2026-05-09'
+        new_ads:
+          type: number
+          example: 12
+        active_ads:
+          type: number
+          example: 47
+      required:
+      - bucket_start
+      - bucket_end
+      - new_ads
+      - active_ads
+    MetaRegionReach:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        total_reach:
+          type: number
+          example: 184200
+        per_advertiser:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaRegionReachPart'
+      required:
+      - region_code
+      - total_reach
+      - per_advertiser
+    MetaRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        total_reach:
+          type: number
+          example: 184200
+      required:
+      - region_code
+      - total_reach
+    MetaRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaRegion'
+      required:
+      - regions
+    MetaTargetingPart:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        ad_count:
+          type: number
+          example: 18
+        excluded_count:
+          type: number
+          example: 2
+      required:
+      - advertiser
+      - ad_count
+      - excluded_count
+    MetaTopAdsChart:
+      type: object
+      properties:
+        ads:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTopAdRow'
+      required:
+      - ads
+    MetaActivityChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaActivitySeries'
+      required:
+      - series
+    MetaReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    AnalyticsAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          example: tiktok
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    ConcentrationPoint:
+      type: object
+      properties:
+        pct_ads:
+          type: number
+          description: Cumulative share of ads (0..1).
+          example: 0.2
+        pct_reach:
+          type: number
+          description: Cumulative share of reach (0..1).
+          example: 0.65
+      required:
+      - pct_ads
+      - pct_reach
+    MetaActivitySeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaActivityPoint'
+      required:
+      - advertiser
+      - points
+    MetaReachRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaRegionReach'
+      required:
+      - regions
+    MetaReachSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachPoint'
+      required:
+      - advertiser
+      - points
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

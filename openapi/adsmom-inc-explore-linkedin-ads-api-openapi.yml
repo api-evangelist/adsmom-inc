@@ -1,0 +1,732 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Explore · LinkedIn Ads API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Explore · LinkedIn Ads
+paths:
+  /api/v1/explore/linkedin/ads:
+    get:
+      operationId: listLinkedinAds
+      parameters:
+      - name: advertiser_id
+        required: false
+        in: query
+        description: Filter to one advertiser (id token).
+        schema:
+          type: string
+      - name: query
+        required: false
+        in: query
+        description: Free-text search across headline and commentary.
+        schema:
+          type: string
+      - name: active
+        required: false
+        in: query
+        description: true | false — active vs ended.
+        schema:
+          type: string
+      - name: started_after
+        required: false
+        in: query
+        description: Started on/after (ISO 8601).
+        schema:
+          type: string
+      - name: format
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - video
+          - image
+      - name: sort
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - newest
+          - oldest
+          - impressions_desc
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      - name: ids
+        required: false
+        in: query
+        description: Batch-hydrate ad id tokens (comma-separated, max 25). When set, filters/pagination are ignored.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LinkedinAdSummary'
+      security:
+      - oauth: []
+      summary: List (or batch-hydrate) LinkedIn ads from your tracked advertisers
+      tags:
+      - Explore · LinkedIn Ads
+  /api/v1/explore/linkedin/ads/impressions:
+    get:
+      operationId: batchLinkedinAdImpressions
+      parameters:
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: ids
+        required: false
+        in: query
+        description: Ad id tokens (comma-separated, max 25).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LinkedinImpressionsTimeline'
+      security:
+      - oauth: []
+      summary: Impression-bracket timeseries for multiple LinkedIn ads
+      tags:
+      - Explore · LinkedIn Ads
+  /api/v1/explore/linkedin/ads/{id_token}:
+    get:
+      operationId: getLinkedinAd
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        required: false
+        in: query
+        description: 'Comma-separated heavy includes: full_targeting, transcript.'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedinAd'
+      security:
+      - oauth: []
+      summary: Get one LinkedIn ad
+      tags:
+      - Explore · LinkedIn Ads
+  /api/v1/explore/linkedin/ads/{id_token}/impressions:
+    get:
+      operationId: getLinkedinAdImpressions
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedinImpressionsTimeline'
+      security:
+      - oauth: []
+      summary: Impression-bracket timeseries for one LinkedIn ad
+      tags:
+      - Explore · LinkedIn Ads
+  /api/v1/explore/linkedin/ads/{id_token}/snapshots:
+    get:
+      operationId: listLinkedinAdSnapshots
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LinkedinAdSnapshot'
+      security:
+      - oauth: []
+      summary: List point-in-time captures of one LinkedIn ad
+      tags:
+      - Explore · LinkedIn Ads
+  /api/v1/explore/linkedin/ads/{id_token}/snapshots/{snapshot_uuid}:
+    get:
+      operationId: getLinkedinAdAtSnapshot
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: snapshot_uuid
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LinkedinAd'
+      security:
+      - oauth: []
+      summary: Get a LinkedIn ad as captured at a snapshot
+      tags:
+      - Explore · LinkedIn Ads
+components:
+  schemas:
+    LinkedinImpressionsTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - linkedin
+          example: linkedin
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinImpressionsPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    LinkedinAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Microsoft
+        company_id:
+          type:
+          - string
+          - 'null'
+          description: LinkedIn /company/{id} key.
+      required:
+      - gid
+      - id_token
+      - name
+      - company_id
+    LinkedinCountryImpression:
+      type: object
+      properties:
+        country:
+          type: string
+          example: Germany
+        percent:
+          type:
+          - number
+          - 'null'
+          description: Impression share, percent (LinkedIn reports shares, not counts).
+          example: 34
+      required:
+      - country
+      - percent
+    LinkedinAdMediaAnalysis:
+      type: object
+      properties:
+        language:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        sentiment:
+          type:
+          - string
+          - 'null'
+        hook_type:
+          type:
+          - string
+          - 'null'
+        content_format:
+          type:
+          - string
+          - 'null'
+        cta_type:
+          type:
+          - string
+          - 'null'
+        has_text_overlay:
+          type:
+          - boolean
+          - 'null'
+        topics:
+          type: array
+          items:
+            type: string
+        on_screen_text:
+          type:
+          - string
+          - 'null'
+          description: On-screen text. Only with `include=transcript`.
+        spoken_content:
+          type:
+          - string
+          - 'null'
+          description: Spoken transcript. Only with `include=transcript`.
+      required:
+      - language
+      - description
+      - sentiment
+      - hook_type
+      - content_format
+      - cta_type
+      - has_text_overlay
+      - topics
+      - on_screen_text
+      - spoken_content
+    LinkedinTargeting:
+      type: object
+      properties:
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinTargetingSegment'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinTargetingParameter'
+      required:
+      - segments
+      - parameters
+    LinkedinAdSnapshot:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
+        captured_at:
+          type: string
+          description: When this capture was taken (ISO 8601).
+        is_active:
+          type:
+          - boolean
+          - 'null'
+        total_impressions:
+          type:
+          - string
+          - 'null'
+          description: Raw impressions bracket as displayed (e.g. "10k-50k").
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+        country_impressions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinCountryImpression'
+      required:
+      - uuid
+      - captured_at
+      - is_active
+      - total_impressions
+      - impressions_lower_bound
+      - impressions_upper_bound
+      - country_impressions
+    LinkedinTargetingSegment:
+      type: object
+      properties:
+        category:
+          type: string
+          example: Location
+        visible:
+          type:
+          - string
+          - 'null'
+        hidden:
+          type:
+          - string
+          - 'null'
+      required:
+      - category
+      - visible
+      - hidden
+    LinkedinAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - linkedin
+          example: linkedin
+        api_id:
+          type: string
+          description: LinkedIn Ad Library ad id.
+          example: '4623456789'
+        advertiser:
+          $ref: '#/components/schemas/LinkedinAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: True for active or recently-active evidence. False covers both confirmed-inactive and unknown — read activity_status for the distinction.
+        activity_status:
+          type: string
+          enum:
+          - active
+          - recently_active
+          - inactive
+          - unknown
+          example: active
+          description: Activity evidence at the latest observation. `recently_active` means the ad was seen in the library within the last crawl window; `unknown` means no evidence either way (never inferred as inactive).
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Campaign end date; null while running.
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+          description: EU impressions bracket upper bound (null for non-EU ads).
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+          description: EU impressions bracket lower bound (null for non-EU ads).
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Headline, falling back to sponsored-post commentary.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - activity_status
+      - start_date
+      - end_date
+      - impressions_upper_bound
+      - impressions_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+    LinkedinAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        cover_image_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        analysis_status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          description: Creative-analysis pipeline status.
+        analysis:
+          allOf:
+          - $ref: '#/components/schemas/LinkedinAdMediaAnalysis'
+      required:
+      - id
+      - type
+      - media_url
+      - cover_image_url
+      - analysis_status
+      - analysis
+    LinkedinAd:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - linkedin
+          example: linkedin
+        api_id:
+          type: string
+          description: LinkedIn Ad Library ad id.
+          example: '4623456789'
+        advertiser:
+          $ref: '#/components/schemas/LinkedinAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: True for active or recently-active evidence. False covers both confirmed-inactive and unknown — read activity_status for the distinction.
+        activity_status:
+          type: string
+          enum:
+          - active
+          - recently_active
+          - inactive
+          - unknown
+          example: active
+          description: Activity evidence at the latest observation. `recently_active` means the ad was seen in the library within the last crawl window; `unknown` means no evidence either way (never inferred as inactive).
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Campaign end date; null while running.
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+          description: EU impressions bracket upper bound (null for non-EU ads).
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+          description: EU impressions bracket lower bound (null for non-EU ads).
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Headline, falling back to sponsored-post commentary.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        headline:
+          type:
+          - string
+          - 'null'
+        commentary:
+          type:
+          - string
+          - 'null'
+        cta_text:
+          type:
+          - string
+          - 'null'
+        destination_url:
+          type:
+          - string
+          - 'null'
+        creative_type:
+          type:
+          - string
+          - 'null'
+        ad_format:
+          type:
+          - string
+          - 'null'
+        payer_name:
+          type:
+          - string
+          - 'null'
+          description: '"Paid for by" entity from the ad detail page.'
+        country_impressions:
+          description: Per-country impression shares from the latest snapshot.
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinCountryImpression'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinAdMedia'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          allOf:
+          - $ref: '#/components/schemas/LinkedinTargeting'
+      required:
+      - gid
+      - id_token
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - activity_status
+      - start_date
+      - end_date
+      - impressions_upper_bound
+      - impressions_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+      - headline
+      - commentary
+      - cta_text
+      - destination_url
+      - creative_type
+      - ad_format
+      - payer_name
+      - country_impressions
+      - media
+      - targeting
+    LinkedinImpressionsPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+          example: 10000
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+          example: 50000
+      required:
+      - date
+      - impressions_lower_bound
+      - impressions_upper_bound
+    LinkedinTargetingParameter:
+      type: object
+      properties:
+        parameter:
+          type: string
+          example: Member skills
+        targeted:
+          type: boolean
+        excluded:
+          type: boolean
+      required:
+      - parameter
+      - targeted
+      - excluded
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

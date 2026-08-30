@@ -1,0 +1,731 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Analytics · Google API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Analytics · Google
+paths:
+  /api/v1/analytics/google/activity:
+    get:
+      operationId: getGoogleActivity
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleActivityChart'
+      security:
+      - oauth: []
+      summary: Google new + active ad counts + impressions over time
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/regions:
+    get:
+      operationId: getGoogleRegions
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleRegionsChart'
+      security:
+      - oauth: []
+      summary: Google available regions by ad count
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/share-of-voice:
+    get:
+      operationId: getGoogleShareOfVoice
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleShareOfVoiceChart'
+      security:
+      - oauth: []
+      summary: Google reach concentration (Lorenz / Gini) per advertiser
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/runtime:
+    get:
+      operationId: getGoogleRuntime
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleRuntimeChart'
+      security:
+      - oauth: []
+      summary: Google runtime distribution + optimal runtime
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/creative:
+    get:
+      operationId: getGoogleCreative
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleCreativeChart'
+      security:
+      - oauth: []
+      summary: 'Google creative breakdown (default: content_format)'
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/creative/{dimension}:
+    get:
+      operationId: getGoogleCreativeDimension
+      parameters:
+      - name: dimension
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleCreativeChart'
+      security:
+      - oauth: []
+      summary: Google creative breakdown by one dimension
+      tags:
+      - Analytics · Google
+  /api/v1/analytics/google/stats:
+    get:
+      operationId: getGoogleStats
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleStatsChart'
+      security:
+      - oauth: []
+      summary: Google per-advertiser creative + impression stats
+      tags:
+      - Analytics · Google
+components:
+  schemas:
+    GoogleRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuntimeBucket'
+      required:
+      - advertiser
+      - buckets
+    RuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+      required:
+      - label
+      - count
+    GoogleRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRegion'
+      required:
+      - regions
+    GoogleStatsChart:
+      type: object
+      properties:
+        advertisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleStatsEntry'
+      required:
+      - advertisers
+    GoogleOptimalRuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+        avg_impressions:
+          type: number
+          example: 142000
+      required:
+      - label
+      - count
+      - avg_impressions
+    GoogleActivityChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleActivitySeries'
+      required:
+      - series
+    GoogleRuntimeChart:
+      type: object
+      properties:
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRuntimeSeries'
+        optimal:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeSeries'
+      required:
+      - distribution
+      - optimal
+    GoogleActivityPoint:
+      type: object
+      properties:
+        period_start:
+          type: string
+          example: '2026-05-01'
+        new_ads:
+          type: number
+          example: 12
+        active_ads:
+          type: number
+          example: 47
+        impressions:
+          type: number
+          description: Prorated impressions for the bucket (upper bound).
+          example: 142000
+      required:
+      - period_start
+      - new_ads
+      - active_ads
+      - impressions
+    GoogleCreativeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        breakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleCreativeBucket'
+      required:
+      - advertiser
+      - breakdown
+    GoogleCreativeBucket:
+      type: object
+      properties:
+        value:
+          type: string
+          example: video
+        count:
+          type: number
+          example: 42
+        impressions:
+          type: number
+          example: 142000
+      required:
+      - value
+      - count
+      - impressions
+    GoogleStatsEntry:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        origin_country:
+          type: string
+          example: US
+        image_count:
+          type:
+          - number
+          - 'null'
+        text_count:
+          type:
+          - number
+          - 'null'
+        video_count:
+          type:
+          - number
+          - 'null'
+        active_count:
+          type:
+          - number
+          - 'null'
+        ended_count:
+          type:
+          - number
+          - 'null'
+        total_impressions:
+          $ref: '#/components/schemas/GoogleImpressionRange'
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRegionImpression'
+        surfaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleSurfaceImpression'
+      required:
+      - advertiser
+      - origin_country
+      - image_count
+      - text_count
+      - video_count
+      - active_count
+      - ended_count
+      - total_impressions
+      - regions
+      - surfaces
+    GoogleRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 84
+      required:
+      - region_code
+      - ad_count
+    GoogleCreativeChart:
+      type: object
+      properties:
+        dimension:
+          type: string
+          example: content_format
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleCreativeSeries'
+      required:
+      - dimension
+      - series
+    AnalyticsAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          example: tiktok
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    ConcentrationPoint:
+      type: object
+      properties:
+        pct_ads:
+          type: number
+          description: Cumulative share of ads (0..1).
+          example: 0.2
+        pct_reach:
+          type: number
+          description: Cumulative share of reach (0..1).
+          example: 0.65
+      required:
+      - pct_ads
+      - pct_reach
+    GoogleImpressionRange:
+      type: object
+      properties:
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - lower_bound
+      - upper_bound
+    GoogleShareOfVoiceSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        ad_count:
+          type: number
+          example: 124
+        awaiting_count:
+          type: number
+          description: Ads still awaiting an impression estimate.
+          example: 6
+        total_reach:
+          type: number
+          example: 4820000
+        gini:
+          type: number
+          description: Gini coefficient (0..1).
+          example: 0.62
+        lorenz:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcentrationPoint'
+      required:
+      - advertiser
+      - ad_count
+      - awaiting_count
+      - total_reach
+      - gini
+      - lorenz
+    GoogleRegionImpression:
+      type: object
+      properties:
+        region_code:
+          type:
+          - string
+          - 'null'
+          example: US
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - region_code
+      - lower_bound
+      - upper_bound
+    GoogleOptimalRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeBucket'
+      required:
+      - advertiser
+      - buckets
+    GoogleShareOfVoiceChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleShareOfVoiceSeries'
+      required:
+      - series
+    GoogleActivitySeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleActivityPoint'
+      required:
+      - advertiser
+      - points
+    GoogleSurfaceImpression:
+      type: object
+      properties:
+        surface:
+          type: string
+          example: YOUTUBE
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - surface
+      - lower_bound
+      - upper_bound
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

@@ -1,0 +1,474 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Explore · Meta Ads API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Explore · Meta Ads
+paths:
+  /api/v1/explore/meta/ads:
+    get:
+      operationId: listMetaAds
+      parameters:
+      - name: advertiser_id
+        required: false
+        in: query
+        description: Filter to one advertiser (id token).
+        schema:
+          type: string
+      - name: query
+        required: false
+        in: query
+        description: Free-text search across creative text.
+        schema:
+          type: string
+      - name: active
+        required: false
+        in: query
+        description: true | false — active vs ended.
+        schema:
+          type: string
+      - name: started_after
+        required: false
+        in: query
+        description: Created on/after (ISO 8601).
+        schema:
+          type: string
+      - name: updated_after
+        required: false
+        in: query
+        description: Ingested on/after (ISO 8601).
+        schema:
+          type: string
+      - name: format
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - video
+          - image
+      - name: sort
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - newest
+          - oldest
+          - reach_desc
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      - name: ids
+        required: false
+        in: query
+        description: Batch-hydrate ad id tokens (comma-separated, max 25). When set, filters/pagination are ignored.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetaAdSummary'
+      security:
+      - oauth: []
+      summary: List (or batch-hydrate) Meta ads from your tracked advertisers
+      tags:
+      - Explore · Meta Ads
+  /api/v1/explore/meta/ads/reach:
+    get:
+      operationId: batchMetaAdReach
+      parameters:
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: ids
+        required: false
+        in: query
+        description: Ad id tokens (comma-separated, max 25).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetaReachTimeline'
+      security:
+      - oauth: []
+      summary: Reach timeseries for multiple Meta ads (sync path)
+      tags:
+      - Explore · Meta Ads
+  /api/v1/explore/meta/ads/{id_token}:
+    get:
+      operationId: getMetaAd
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        required: false
+        in: query
+        description: 'Comma-separated heavy includes: full_targeting.'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaAd'
+      security:
+      - oauth: []
+      summary: Get one Meta ad
+      tags:
+      - Explore · Meta Ads
+  /api/v1/explore/meta/ads/{id_token}/reach:
+    get:
+      operationId: getMetaAdReach
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetaReachTimeline'
+      security:
+      - oauth: []
+      summary: Daily reach timeseries for one Meta ad
+      tags:
+      - Explore · Meta Ads
+components:
+  schemas:
+    MetaReachTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    MetaAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        advertiser:
+          $ref: '#/components/schemas/MetaAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Delivery stop date; null while active.
+        reach_total:
+          type:
+          - number
+          - 'null'
+          description: Lifetime breakdown reach from the Meta Ad Library.
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+          description: First creative link title.
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: First creative body (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_total
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+    MetaAd:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        advertiser:
+          $ref: '#/components/schemas/MetaAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Delivery stop date; null while active.
+        reach_total:
+          type:
+          - number
+          - 'null'
+          description: Lifetime breakdown reach from the Meta Ad Library.
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+          description: First creative link title.
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: First creative body (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        bodies:
+          description: All creative bodies.
+          type: array
+          items:
+            type: string
+        link_titles:
+          description: All creative link titles.
+          type: array
+          items:
+            type: string
+        link_captions:
+          description: All creative link captions.
+          type: array
+          items:
+            type: string
+        link_descriptions:
+          description: All creative link descriptions.
+          type: array
+          items:
+            type: string
+        languages:
+          description: Ad languages (ISO codes).
+          type: array
+          items:
+            type: string
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaAdMedia'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          allOf:
+          - $ref: '#/components/schemas/MetaTargeting'
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_total
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+      - bodies
+      - link_titles
+      - link_captions
+      - link_descriptions
+      - languages
+      - media
+      - targeting
+    MetaAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min). Video only.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+      required:
+      - id
+      - type
+      - media_url
+      - thumbnail_url
+    MetaReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    MetaAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - name
+    MetaTargeting:
+      type: object
+      properties:
+        age_range:
+          type:
+          - string
+          - 'null'
+          example: 25-54
+        gender:
+          type:
+          - string
+          - 'null'
+          example: All
+        locations:
+          description: Targeted location names, when the source is a string list.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      required:
+      - age_range
+      - gender
+      - locations
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

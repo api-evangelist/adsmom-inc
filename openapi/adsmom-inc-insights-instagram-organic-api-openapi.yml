@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Insights · Instagram Organic API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Insights · Instagram Organic
+paths:
+  /api/v1/insights/instagram-social/accounts:
+    get:
+      operationId: listInstagramSocialAccounts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SocialAccount'
+      security:
+      - oauth: []
+      summary: List your tracked Instagram Organic accounts
+      tags:
+      - Insights · Instagram Organic
+    post:
+      operationId: trackInstagramSocialAccount
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialAccountTrackBody'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackedSocialAccount'
+      security:
+      - oauth: []
+      summary: Track an Instagram Organic account
+      tags:
+      - Insights · Instagram Organic
+  /api/v1/insights/instagram-social/accounts/{id_token}:
+    get:
+      operationId: getInstagramSocialAccount
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccount'
+      security:
+      - oauth: []
+      summary: Get a tracked Instagram Organic account
+      tags:
+      - Insights · Instagram Organic
+    delete:
+      operationId: untrackInstagramSocialAccount
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      security:
+      - oauth: []
+      summary: Untrack an Instagram Organic account
+      tags:
+      - Insights · Instagram Organic
+  /api/v1/insights/instagram-social/accounts/{id_token}/summary:
+    get:
+      operationId: getInstagramSocialAccountSummary
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccountInsight'
+      security:
+      - oauth: []
+      summary: AI insight summary for a tracked Instagram Organic account
+      tags:
+      - Insights · Instagram Organic
+  /api/v1/insights/instagram-social/accounts/{id_token}/reports/weekly:
+    get:
+      operationId: getInstagramSocialAccountWeeklyReport
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: week_start
+        required: false
+        in: query
+        description: Week start date (ISO 8601). Omit for the latest report.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialAccountWeeklyReport'
+      security:
+      - oauth: []
+      summary: Weekly organic report for a tracked Instagram Organic account
+      tags:
+      - Insights · Instagram Organic
+components:
+  schemas:
+    SocialAccountWeeklyReport:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok-social/account/7100
+        id_token:
+          type: string
+          example: tiktok-social.account.7100
+        platform:
+          type: string
+          enum:
+          - tiktok-social
+          - instagram-social
+        week_start:
+          type: string
+          example: '2026-06-15'
+        week_end:
+          type: string
+          example: '2026-06-21'
+        created_at:
+          type:
+          - string
+          - 'null'
+        report:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        metrics:
+          type:
+          - object
+          - 'null'
+        previous_metrics:
+          type:
+          - object
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - week_start
+      - week_end
+      - created_at
+      - report
+      - metrics
+      - previous_metrics
+    TrackedSocialAccount:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok-social/account/7100
+        id_token:
+          type: string
+          example: tiktok-social.account.7100
+        platform:
+          type: string
+          enum:
+          - tiktok-social
+          - instagram-social
+        handle:
+          type: string
+          example: nike
+        name:
+          type: string
+          example: Nike
+        follower_count:
+          type:
+          - number
+          - 'null'
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - handle
+      - name
+      - follower_count
+      - is_active
+      - pending_ingest
+      - tracked_at
+    SocialAccount:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok-social/account/123456
+        id_token:
+          type: string
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok-social.account.123456
+        platform:
+          type: string
+          enum:
+          - tiktok-social
+          - instagram-social
+          example: tiktok-social
+        handle:
+          type: string
+          description: Account handle / username.
+          example: nike
+        name:
+          type: string
+          description: Account display name.
+          example: Nike
+        follower_count:
+          type:
+          - number
+          - 'null'
+          description: Latest crawled follower count, when known.
+      required:
+      - gid
+      - id_token
+      - platform
+      - handle
+      - name
+      - follower_count
+    SocialAccountInsight:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok-social/account/7100
+        id_token:
+          type: string
+          example: tiktok-social.account.7100
+        platform:
+          type: string
+          enum:
+          - tiktok-social
+          - instagram-social
+        status:
+          type: string
+          description: Generation status (e.g. completed, pending).
+        generated_at:
+          type:
+          - string
+          - 'null'
+        total_posts_analyzed:
+          type:
+          - number
+          - 'null'
+        page_summary:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        content_analysis:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        initial_assessment:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        recommendations:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+      required:
+      - gid
+      - id_token
+      - platform
+      - status
+      - generated_at
+      - total_posts_analyzed
+      - page_summary
+      - content_analysis
+      - initial_assessment
+      - recommendations
+    SocialAccountTrackBody:
+      type: object
+      properties:
+        handle:
+          type: string
+          description: Account handle to track — an @handle, a bare handle, or a profile URL (tiktok.com/@x, instagram.com/x). Tracking kicks off a crawl; posts appear a few minutes later.
+          example: '@nike'
+      required:
+      - handle
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

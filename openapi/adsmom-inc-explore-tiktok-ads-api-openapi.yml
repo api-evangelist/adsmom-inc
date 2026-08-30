@@ -1,0 +1,663 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Explore · TikTok Ads API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Explore · TikTok Ads
+paths:
+  /api/v1/explore/tiktok/ads:
+    get:
+      operationId: listTiktokAds
+      parameters:
+      - name: advertiser_id
+        required: false
+        in: query
+        description: Filter to one advertiser (id token).
+        schema:
+          type: string
+      - name: query
+        required: false
+        in: query
+        description: Free-text search across creative text.
+        schema:
+          type: string
+      - name: active
+        required: false
+        in: query
+        description: true | false — active vs ended.
+        schema:
+          type: string
+      - name: started_after
+        required: false
+        in: query
+        description: First shown on/after (ISO 8601).
+        schema:
+          type: string
+      - name: format
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - video
+          - image
+      - name: sort
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - newest
+          - oldest
+          - reach_desc
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      - name: ids
+        required: false
+        in: query
+        description: Batch-hydrate ad id tokens (comma-separated, max 25). When set, filters/pagination are ignored.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TiktokAdSummary'
+      security:
+      - oauth: []
+      summary: List (or batch-hydrate) TikTok ads from your tracked advertisers
+      tags:
+      - Explore · TikTok Ads
+  /api/v1/explore/tiktok/ads/reach:
+    get:
+      operationId: batchTiktokAdReach
+      parameters:
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: ids
+        required: false
+        in: query
+        description: Ad id tokens (comma-separated, max 25).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TiktokReachTimeline'
+      security:
+      - oauth: []
+      summary: Reach timeseries for multiple TikTok ads (sync path)
+      tags:
+      - Explore · TikTok Ads
+  /api/v1/explore/tiktok/ads/{id_token}:
+    get:
+      operationId: getTiktokAd
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        required: false
+        in: query
+        description: 'Comma-separated heavy includes: full_targeting, transcript.'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokAd'
+      security:
+      - oauth: []
+      summary: Get one TikTok ad
+      tags:
+      - Explore · TikTok Ads
+  /api/v1/explore/tiktok/ads/{id_token}/reach:
+    get:
+      operationId: getTiktokAdReach
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokReachTimeline'
+      security:
+      - oauth: []
+      summary: Daily reach timeseries for one TikTok ad
+      tags:
+      - Explore · TikTok Ads
+  /api/v1/explore/tiktok/ads/{id_token}/snapshots:
+    get:
+      operationId: listTiktokAdSnapshots
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TiktokAdSnapshot'
+      security:
+      - oauth: []
+      summary: List point-in-time captures of one TikTok ad
+      tags:
+      - Explore · TikTok Ads
+  /api/v1/explore/tiktok/ads/{id_token}/snapshots/{snapshot_uuid}:
+    get:
+      operationId: getTiktokAdAtSnapshot
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: snapshot_uuid
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokAd'
+      security:
+      - oauth: []
+      summary: Get a TikTok ad as captured at a snapshot
+      tags:
+      - Explore · TikTok Ads
+components:
+  schemas:
+    TiktokReachTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - tiktok
+          example: tiktok
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    TiktokAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        cover_image_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        description:
+          type:
+          - string
+          - 'null'
+        language:
+          type:
+          - string
+          - 'null'
+        hook_type:
+          type:
+          - string
+          - 'null'
+        content_format:
+          type:
+          - string
+          - 'null'
+        cta_type:
+          type:
+          - string
+          - 'null'
+        audio_type:
+          type:
+          - string
+          - 'null'
+        camera_perspective:
+          type:
+          - string
+          - 'null'
+        psychological_trigger:
+          type:
+          - string
+          - 'null'
+        visual_pacing:
+          type:
+          - string
+          - 'null'
+        promotion_type:
+          type:
+          - string
+          - 'null'
+        ad_category:
+          type:
+          - string
+          - 'null'
+        sentiment:
+          type:
+          - string
+          - 'null'
+        is_ugc:
+          type:
+          - boolean
+          - 'null'
+        has_text_overlay:
+          type:
+          - boolean
+          - 'null'
+        industries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        brand_names:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        on_screen_text:
+          type:
+          - string
+          - 'null'
+          description: On-screen text. Only with `include=transcript`.
+        spoken_content:
+          type:
+          - string
+          - 'null'
+          description: Spoken transcript. Only with `include=transcript`.
+      required:
+      - id
+      - type
+      - media_url
+      - cover_image_url
+      - description
+      - language
+      - hook_type
+      - content_format
+      - cta_type
+      - audio_type
+      - camera_perspective
+      - psychological_trigger
+      - visual_pacing
+      - promotion_type
+      - ad_category
+      - sentiment
+      - is_ugc
+      - has_text_overlay
+      - industries
+      - brand_names
+      - on_screen_text
+      - spoken_content
+    TiktokRegionReach:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        reach:
+          type: number
+          example: 120000
+      required:
+      - region_code
+      - reach
+    TiktokAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - tiktok
+          example: tiktok
+        api_id:
+          type: string
+          description: TikTok-native ad id.
+          example: 17420...
+        advertiser:
+          $ref: '#/components/schemas/TiktokAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Ad description.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+    TiktokAdSnapshot:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
+        captured_at:
+          type: string
+          description: When this capture was taken (ISO 8601).
+        is_active:
+          type: boolean
+          example: true
+        last_shown_date:
+          type:
+          - string
+          - 'null'
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        region_reach:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegionReach'
+      required:
+      - uuid
+      - captured_at
+      - is_active
+      - last_shown_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - region_reach
+    TiktokTargeting:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        age_range:
+          type: string
+          example: 25-34
+        gender:
+          type: string
+          example: female
+      required:
+      - region_code
+      - age_range
+      - gender
+    TiktokAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+        api_business_id:
+          type:
+          - string
+          - 'null'
+          description: TikTok-native business id.
+        username:
+          type:
+          - string
+          - 'null'
+          example: '@kaufland'
+      required:
+      - gid
+      - id_token
+      - name
+      - api_business_id
+      - username
+    TiktokAd:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - tiktok
+          example: tiktok
+        api_id:
+          type: string
+          description: TikTok-native ad id.
+          example: 17420...
+        advertiser:
+          $ref: '#/components/schemas/TiktokAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Ad description.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokAdMedia'
+        region_reach:
+          description: Per-region reach from the latest snapshot.
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegionReach'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TiktokTargeting'
+      required:
+      - gid
+      - id_token
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+      - media
+      - region_reach
+      - targeting
+    TiktokReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

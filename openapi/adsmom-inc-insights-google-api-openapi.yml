@@ -1,0 +1,328 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Insights · Google API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Insights · Google
+paths:
+  /api/v1/insights/google/advertisers:
+    get:
+      operationId: listGoogleAdvertisers
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Advertiser'
+      security:
+      - oauth: []
+      summary: List your tracked Google advertisers
+      tags:
+      - Insights · Google
+    post:
+      operationId: trackGoogleAdvertiser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleTrackBody'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackedAdvertiser'
+      security:
+      - oauth: []
+      summary: Track a Google advertiser
+      tags:
+      - Insights · Google
+  /api/v1/insights/google/advertisers/{id_token}:
+    get:
+      operationId: getGoogleAdvertiser
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Advertiser'
+      security:
+      - oauth: []
+      summary: Get a tracked Google advertiser
+      tags:
+      - Insights · Google
+    delete:
+      operationId: untrackGoogleAdvertiser
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      security:
+      - oauth: []
+      summary: Untrack a Google advertiser
+      tags:
+      - Insights · Google
+  /api/v1/insights/google/advertisers/{id_token}/summary:
+    get:
+      operationId: getGoogleAdvertiserSummary
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdvertiserInsight'
+      security:
+      - oauth: []
+      summary: AI insight summary for a tracked Google advertiser
+      tags:
+      - Insights · Google
+  /api/v1/insights/google/advertisers/{id_token}/reports/weekly:
+    get:
+      operationId: getGoogleAdvertiserWeeklyReport
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: week_start
+        required: false
+        in: query
+        description: Week start date (ISO 8601). Omit for the latest report.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyReport'
+      security:
+      - oauth: []
+      summary: Weekly report for a tracked Google advertiser
+      tags:
+      - Insights · Google
+components:
+  schemas:
+    AdvertiserInsight:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        status:
+          type: string
+          description: Generation status (e.g. completed, pending).
+        generated_at:
+          type:
+          - string
+          - 'null'
+        total_ads_analyzed:
+          type:
+          - number
+          - 'null'
+        page_summary:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        ad_analysis:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        initial_assessment:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        recommendations:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+      required:
+      - gid
+      - id_token
+      - platform
+      - status
+      - generated_at
+      - total_ads_analyzed
+      - page_summary
+      - ad_analysis
+      - initial_assessment
+      - recommendations
+    TrackedAdvertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        name:
+          type: string
+          example: Kaufland
+        external_id:
+          type:
+          - string
+          - 'null'
+          description: Platform-native business id, when resolved.
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+      - external_id
+      - is_active
+      - pending_ingest
+      - tracked_at
+    GoogleTrackBody:
+      type: object
+      properties:
+        advertiser_id:
+          type: string
+          description: A Google Ad Library advertiser id.
+      required:
+      - advertiser_id
+    WeeklyReport:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        week_start:
+          type: string
+          example: '2026-06-15'
+        week_end:
+          type: string
+          example: '2026-06-21'
+        created_at:
+          type:
+          - string
+          - 'null'
+        report:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        metrics:
+          type:
+          - object
+          - 'null'
+        previous_metrics:
+          type:
+          - object
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - week_start
+      - week_end
+      - created_at
+      - report
+      - metrics
+      - previous_metrics
+    Advertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+          example: tiktok
+        name:
+          type: string
+          description: Advertiser / page display name.
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

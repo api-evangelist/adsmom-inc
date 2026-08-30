@@ -1,0 +1,91 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Account API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Account
+paths:
+  /api/v1/usage:
+    get:
+      operationId: getUsage
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usage'
+      summary: Current credits, rate limit, plan, and tracked-advertiser count
+      tags:
+      - Account
+components:
+  schemas:
+    UsageCredits:
+      type: object
+      properties:
+        used:
+          type: number
+          description: Credits consumed this period.
+          example: 4210
+        limit:
+          type: number
+          description: Credit limit for this period.
+          example: 5000
+        remaining:
+          type: number
+          description: Credits remaining this period.
+          example: 790
+        period_start:
+          type:
+          - string
+          - 'null'
+          description: Start of the current billing period (ISO 8601).
+        period_end:
+          type:
+          - string
+          - 'null'
+          description: End of the current billing period (ISO 8601).
+      required:
+      - used
+      - limit
+      - remaining
+      - period_start
+      - period_end
+    Usage:
+      type: object
+      properties:
+        plan:
+          type: string
+          example: BUSINESS
+        tracked_advertisers:
+          type: number
+          description: Active tracked advertisers.
+          example: 37
+        credits:
+          $ref: '#/components/schemas/UsageCredits'
+        rate_limit:
+          $ref: '#/components/schemas/UsageRateLimit'
+      required:
+      - plan
+      - tracked_advertisers
+      - credits
+      - rate_limit
+    UsageRateLimit:
+      type: object
+      properties:
+        requests_per_minute:
+          type: number
+          description: Requests allowed per window.
+          example: 120
+      required:
+      - requests_per_minute
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

@@ -1,0 +1,452 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Explore · Google Ads API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Explore · Google Ads
+paths:
+  /api/v1/explore/google/ads:
+    get:
+      operationId: listGoogleAds
+      parameters:
+      - name: advertiser_id
+        required: false
+        in: query
+        description: Filter to one advertiser (id token).
+        schema:
+          type: string
+      - name: query
+        required: false
+        in: query
+        description: Free-text search across headline and description.
+        schema:
+          type: string
+      - name: active
+        required: false
+        in: query
+        description: true | false — active vs ended.
+        schema:
+          type: string
+      - name: started_after
+        required: false
+        in: query
+        description: First shown on/after (ISO 8601).
+        schema:
+          type: string
+      - name: updated_after
+        required: false
+        in: query
+        description: Last shown on/after (ISO 8601).
+        schema:
+          type: string
+      - name: format
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - video
+          - image
+          - text
+      - name: sort
+        required: false
+        in: query
+        schema:
+          type: string
+          enum:
+          - newest
+          - oldest
+          - reach_desc
+      - name: cursor
+        required: false
+        in: query
+        description: Opaque pagination cursor.
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        schema:
+          maximum: 25
+          default: 25
+          type: number
+      - name: ids
+        required: false
+        in: query
+        description: Batch-hydrate ad id tokens (comma-separated, max 25). When set, filters/pagination are ignored.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GoogleAdSummary'
+      security:
+      - oauth: []
+      summary: List (or batch-hydrate) Google ads from your tracked advertisers
+      tags:
+      - Explore · Google Ads
+  /api/v1/explore/google/ads/{id_token}:
+    get:
+      operationId: getGoogleAd
+      parameters:
+      - name: id_token
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: include
+        required: false
+        in: query
+        description: 'Comma-separated heavy includes: full_targeting.'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleAd'
+      security:
+      - oauth: []
+      summary: Get one Google ad
+      tags:
+      - Explore · Google Ads
+components:
+  schemas:
+    GoogleAd:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/ad/CR1234...
+        id_token:
+          type: string
+          example: google.ad.CR1234...
+        platform:
+          type: string
+          enum:
+          - google
+          example: google
+        advertiser:
+          $ref: '#/components/schemas/GoogleAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: Shown within the last 30 days.
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        impression_lower_bound:
+          type:
+          - number
+          - 'null'
+        impression_upper_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - text
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Creative description (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        call_to_action:
+          type:
+          - string
+          - 'null'
+        destination_url:
+          type:
+          - string
+          - 'null'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleAdMedia'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          allOf:
+          - $ref: '#/components/schemas/GoogleTargeting'
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - impression_lower_bound
+      - impression_upper_bound
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+      - call_to_action
+      - destination_url
+      - media
+      - targeting
+    GoogleTargeting:
+      type: object
+      properties:
+        region_codes:
+          description: Region codes the ad was shown in (Google-internal codes).
+          type: array
+          items:
+            type: string
+      required:
+      - region_codes
+    GoogleAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/advertiser/AR1234...
+        id_token:
+          type: string
+          example: google.advertiser.AR1234...
+        name:
+          type: string
+          example: Kaufland
+        origin_country:
+          type:
+          - string
+          - 'null'
+          example: DE
+        icon:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - name
+      - origin_country
+      - icon
+    GoogleAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/ad/CR1234...
+        id_token:
+          type: string
+          example: google.ad.CR1234...
+        platform:
+          type: string
+          enum:
+          - google
+          example: google
+        advertiser:
+          $ref: '#/components/schemas/GoogleAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: Shown within the last 30 days.
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        impression_lower_bound:
+          type:
+          - number
+          - 'null'
+        impression_upper_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - text
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Creative description (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - impression_lower_bound
+      - impression_upper_bound
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+    GoogleAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        description:
+          type:
+          - string
+          - 'null'
+        language:
+          type:
+          - string
+          - 'null'
+        hook_type:
+          type:
+          - string
+          - 'null'
+        content_format:
+          type:
+          - string
+          - 'null'
+        cta_type:
+          type:
+          - string
+          - 'null'
+        audio_type:
+          type:
+          - string
+          - 'null'
+        camera_perspective:
+          type:
+          - string
+          - 'null'
+        psychological_trigger:
+          type:
+          - string
+          - 'null'
+        visual_pacing:
+          type:
+          - string
+          - 'null'
+        promotion_type:
+          type:
+          - string
+          - 'null'
+        ad_category:
+          type:
+          - string
+          - 'null'
+        sentiment:
+          type:
+          - string
+          - 'null'
+        is_ugc:
+          type:
+          - boolean
+          - 'null'
+        has_text_overlay:
+          type:
+          - boolean
+          - 'null'
+        industries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        brand_names:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        on_screen_text:
+          type:
+          - string
+          - 'null'
+        spoken_content:
+          type:
+          - string
+          - 'null'
+      required:
+      - id
+      - type
+      - media_url
+      - thumbnail_url
+      - description
+      - language
+      - hook_type
+      - content_format
+      - cta_type
+      - audio_type
+      - camera_perspective
+      - psychological_trigger
+      - visual_pacing
+      - promotion_type
+      - ad_category
+      - sentiment
+      - is_ugc
+      - has_text_overlay
+      - industries
+      - brand_names
+      - on_screen_text
+      - spoken_content
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

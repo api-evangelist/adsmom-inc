@@ -1,0 +1,814 @@
+openapi: 3.2.0
+info:
+  title: Adsmom Analytics · TikTok API
+  description: Stable REST API for tracked ad intelligence across Meta, TikTok, and Google. Authenticate with OAuth 2.0 client_credentials.
+  version: '1.0'
+  contact: {}
+servers:
+- url: /
+tags:
+- name: Analytics · TikTok
+paths:
+  /api/v1/analytics/tiktok/reach:
+    get:
+      operationId: getTiktokReach
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokReachChart'
+      security:
+      - oauth: []
+      summary: TikTok reach over time, per advertiser
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/reach/regions:
+    get:
+      operationId: getTiktokReachRegions
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokReachRegionsChart'
+      security:
+      - oauth: []
+      summary: TikTok reach by region, per advertiser
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/activity:
+    get:
+      operationId: getTiktokActivity
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokActivityChart'
+      security:
+      - oauth: []
+      summary: TikTok new + active ad counts over time
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/regions:
+    get:
+      operationId: getTiktokRegions
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokRegionsChart'
+      security:
+      - oauth: []
+      summary: TikTok available regions by ad count
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/share-of-voice:
+    get:
+      operationId: getTiktokShareOfVoice
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokShareOfVoiceChart'
+      security:
+      - oauth: []
+      summary: TikTok share of voice across the set
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/runtime:
+    get:
+      operationId: getTiktokRuntime
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokRuntimeChart'
+      security:
+      - oauth: []
+      summary: TikTok runtime distribution + optimal runtime
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/targeting:
+    get:
+      operationId: getTiktokTargeting
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokTargetingChart'
+      security:
+      - oauth: []
+      summary: TikTok regional targeting overlap
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/creative:
+    get:
+      operationId: getTiktokCreative
+      parameters:
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokCreativeChart'
+      security:
+      - oauth: []
+      summary: TikTok creative mix (hook, format, audio)
+      tags:
+      - Analytics · TikTok
+  /api/v1/analytics/tiktok/creative/{dimension}:
+    get:
+      operationId: getTiktokCreativeDimension
+      parameters:
+      - name: dimension
+        required: true
+        in: path
+        schema:
+          type: string
+      - name: advertiser_ids
+        required: false
+        in: query
+        description: Comma-separated advertiser id tokens. Defaults to all tracked.
+        schema:
+          example: meta.advertiser.abc,meta.advertiser.def
+          type: string
+      - name: date_from
+        required: false
+        in: query
+        description: Start date (ISO 8601).
+        schema:
+          type: string
+      - name: date_to
+        required: false
+        in: query
+        description: End date (ISO 8601).
+        schema:
+          type: string
+      - name: region_codes
+        required: false
+        in: query
+        description: Comma-separated region codes (e.g. US,GB).
+        schema:
+          type: string
+      - name: granularity
+        required: false
+        in: query
+        schema:
+          example: day
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TiktokCreativeDimensionChart'
+      security:
+      - oauth: []
+      summary: TikTok creative breakdown by one dimension
+      tags:
+      - Analytics · TikTok
+components:
+  schemas:
+    TiktokActivityChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokActivitySeries'
+      required:
+      - series
+    TiktokActivitySeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokActivityPoint'
+      required:
+      - advertiser
+      - points
+    TiktokCreativeChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokCreativeSeries'
+      required:
+      - series
+    TiktokCreativeDimensionSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        breakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreativeMixEntry'
+      required:
+      - advertiser
+      - breakdown
+    TiktokReachRegionsChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachRegionSeries'
+      required:
+      - series
+    TiktokRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegion'
+      required:
+      - regions
+    RuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+      required:
+      - label
+      - count
+    TiktokTargetingChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokTargetingRegion'
+      required:
+      - regions
+    TiktokReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    TiktokCreativeDimensionChart:
+      type: object
+      properties:
+        dimension:
+          type: string
+          enum:
+          - hook_type
+          - content_format
+          - audio_type
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokCreativeDimensionSeries'
+      required:
+      - dimension
+      - series
+    TiktokRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 84
+      required:
+      - region_code
+      - ad_count
+    TiktokRuntimeChart:
+      type: object
+      properties:
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRuntimeSeries'
+        optimal:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokOptimalRuntimeEntry'
+      required:
+      - distribution
+      - optimal
+    TiktokOptimalRuntimeEntry:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        avg_reach:
+          type: number
+          example: 142000
+        ad_count:
+          type: number
+          example: 23
+      required:
+      - label
+      - avg_reach
+      - ad_count
+    TiktokReachSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachPoint'
+      required:
+      - advertiser
+      - points
+    CreativeMixEntry:
+      type: object
+      properties:
+        value:
+          type: string
+          example: problem_solution
+        count:
+          type: number
+          example: 42
+      required:
+      - value
+      - count
+    TiktokReachRegionSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegionImpressions'
+      required:
+      - advertiser
+      - regions
+    AnalyticsAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          example: tiktok
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    TiktokRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuntimeBucket'
+      required:
+      - advertiser
+      - buckets
+    TiktokActivityPoint:
+      type: object
+      properties:
+        period_start:
+          type: string
+          example: '2026-05-01'
+        period_end:
+          type: string
+          example: '2026-05-08'
+        new_ads:
+          type: number
+          example: 12
+        active_ads:
+          type: number
+          example: 47
+      required:
+      - period_start
+      - period_end
+      - new_ads
+      - active_ads
+    TiktokShareOfVoiceEntry:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        total_reach:
+          type: number
+          example: 4820000
+        total_ads:
+          type: number
+          example: 124
+        percentage:
+          type: number
+          description: Share of the set total (0..100).
+          example: 38.4
+      required:
+      - advertiser
+      - total_reach
+      - total_ads
+      - percentage
+    TiktokCreativeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        hook_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreativeMixEntry'
+        content_formats:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreativeMixEntry'
+        audio_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreativeMixEntry'
+      required:
+      - advertiser
+      - hook_types
+      - content_formats
+      - audio_types
+    TiktokReachChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachSeries'
+      required:
+      - series
+    TiktokShareOfVoiceChart:
+      type: object
+      properties:
+        advertisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokShareOfVoiceEntry'
+      required:
+      - advertisers
+    TiktokRegionImpressions:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        impressions:
+          type: number
+          example: 920000
+      required:
+      - region_code
+      - impressions
+    TiktokTargetingRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        advertisers:
+          description: Display names of tracked advertisers targeting this region.
+          example:
+          - Kaufland
+          - Lidl
+          type: array
+          items:
+            type: string
+      required:
+      - region_code
+      - advertisers
+  securitySchemes:
+    oauth:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
