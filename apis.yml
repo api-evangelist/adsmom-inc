@@ -64,7 +64,7 @@ tags:
 - REST
 - Analytics
 - Social-Media
-- Agent Native
+- agent-native
 tags_raw:
 - Company
 - Advertising
@@ -91,7 +91,7 @@ apis:
   tags:
   - MCP
   - Artificial Intelligence
-  - Agent Native
+  - agent-native
   tags_raw:
   - MCP
   - AI
