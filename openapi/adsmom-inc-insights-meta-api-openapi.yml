@@ -135,64 +135,6 @@ paths:
       - Insights · Meta
 components:
   schemas:
-    AdvertiserInsight:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        status:
-          type: string
-          description: Generation status (e.g. completed, pending).
-        generated_at:
-          type:
-          - string
-          - 'null'
-        total_ads_analyzed:
-          type:
-          - number
-          - 'null'
-        page_summary:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        ad_analysis:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        initial_assessment:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        recommendations:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-      required:
-      - gid
-      - id_token
-      - platform
-      - status
-      - generated_at
-      - total_ads_analyzed
-      - page_summary
-      - ad_analysis
-      - initial_assessment
-      - recommendations
     MetaTrackBody:
       type: object
       properties:
@@ -201,49 +143,6 @@ components:
           description: Facebook page name, handle, or numeric page id. A numeric id is matched exactly; otherwise the top page-search result is tracked.
       required:
       - query
-    TrackedAdvertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        name:
-          type: string
-          example: Kaufland
-        external_id:
-          type:
-          - string
-          - 'null'
-          description: Platform-native business id, when resolved.
-        is_active:
-          type: boolean
-          example: true
-        pending_ingest:
-          type: boolean
-          description: True when the ingest crawl has not completed yet.
-        tracked_at:
-          type:
-          - string
-          - 'null'
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
-      - external_id
-      - is_active
-      - pending_ingest
-      - tracked_at
     WeeklyReport:
       type: object
       properties:
@@ -321,6 +220,107 @@ components:
       - id_token
       - platform
       - name
+    AdvertiserInsight:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        status:
+          type: string
+          description: Generation status (e.g. completed, pending).
+        generated_at:
+          type:
+          - string
+          - 'null'
+        total_ads_analyzed:
+          type:
+          - number
+          - 'null'
+        page_summary:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        ad_analysis:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        initial_assessment:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        recommendations:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+      required:
+      - gid
+      - id_token
+      - platform
+      - status
+      - generated_at
+      - total_ads_analyzed
+      - page_summary
+      - ad_analysis
+      - initial_assessment
+      - recommendations
+    TrackedAdvertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        name:
+          type: string
+          example: Kaufland
+        external_id:
+          type:
+          - string
+          - 'null'
+          description: Platform-native business id, when resolved.
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+      - external_id
+      - is_active
+      - pending_ingest
+      - tracked_at
   securitySchemes:
     oauth:
       scheme: bearer

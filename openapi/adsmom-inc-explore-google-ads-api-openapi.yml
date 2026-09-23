@@ -123,109 +123,6 @@ paths:
       - Explore · Google Ads
 components:
   schemas:
-    GoogleAd:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/google/ad/CR1234...
-        id_token:
-          type: string
-          example: google.ad.CR1234...
-        platform:
-          type: string
-          enum:
-          - google
-          example: google
-        advertiser:
-          $ref: '#/components/schemas/GoogleAdvertiserRef'
-        is_active:
-          type: boolean
-          example: true
-          description: Shown within the last 30 days.
-        start_date:
-          type:
-          - string
-          - 'null'
-          example: '2026-05-01'
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: Last-shown date; null while active.
-        impression_lower_bound:
-          type:
-          - number
-          - 'null'
-        impression_upper_bound:
-          type:
-          - number
-          - 'null'
-        format:
-          type: string
-          enum:
-          - video
-          - image
-          - text
-          - unknown
-        headline:
-          type:
-          - string
-          - 'null'
-        primary_text:
-          type:
-          - string
-          - 'null'
-          description: Creative description (truncated).
-        thumbnail_url:
-          type:
-          - string
-          - 'null'
-          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
-        call_to_action:
-          type:
-          - string
-          - 'null'
-        destination_url:
-          type:
-          - string
-          - 'null'
-        media:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleAdMedia'
-        targeting:
-          description: Only with `include=full_targeting`; null otherwise.
-          allOf:
-          - $ref: '#/components/schemas/GoogleTargeting'
-      required:
-      - gid
-      - id_token
-      - platform
-      - advertiser
-      - is_active
-      - start_date
-      - end_date
-      - impression_lower_bound
-      - impression_upper_bound
-      - format
-      - headline
-      - primary_text
-      - thumbnail_url
-      - call_to_action
-      - destination_url
-      - media
-      - targeting
-    GoogleTargeting:
-      type: object
-      properties:
-        region_codes:
-          description: Region codes the ad was shown in (Google-internal codes).
-          type: array
-          items:
-            type: string
-      required:
-      - region_codes
     GoogleAdvertiserRef:
       type: object
       properties:
@@ -253,79 +150,6 @@ components:
       - name
       - origin_country
       - icon
-    GoogleAdSummary:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/google/ad/CR1234...
-        id_token:
-          type: string
-          example: google.ad.CR1234...
-        platform:
-          type: string
-          enum:
-          - google
-          example: google
-        advertiser:
-          $ref: '#/components/schemas/GoogleAdvertiserRef'
-        is_active:
-          type: boolean
-          example: true
-          description: Shown within the last 30 days.
-        start_date:
-          type:
-          - string
-          - 'null'
-          example: '2026-05-01'
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: Last-shown date; null while active.
-        impression_lower_bound:
-          type:
-          - number
-          - 'null'
-        impression_upper_bound:
-          type:
-          - number
-          - 'null'
-        format:
-          type: string
-          enum:
-          - video
-          - image
-          - text
-          - unknown
-        headline:
-          type:
-          - string
-          - 'null'
-        primary_text:
-          type:
-          - string
-          - 'null'
-          description: Creative description (truncated).
-        thumbnail_url:
-          type:
-          - string
-          - 'null'
-          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
-      required:
-      - gid
-      - id_token
-      - platform
-      - advertiser
-      - is_active
-      - start_date
-      - end_date
-      - impression_lower_bound
-      - impression_upper_bound
-      - format
-      - headline
-      - primary_text
-      - thumbnail_url
     GoogleAdMedia:
       type: object
       properties:
@@ -445,6 +269,182 @@ components:
       - brand_names
       - on_screen_text
       - spoken_content
+    GoogleAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/ad/CR1234...
+        id_token:
+          type: string
+          example: google.ad.CR1234...
+        platform:
+          type: string
+          enum:
+          - google
+          example: google
+        advertiser:
+          $ref: '#/components/schemas/GoogleAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: Shown within the last 30 days.
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        impression_lower_bound:
+          type:
+          - number
+          - 'null'
+        impression_upper_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - text
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Creative description (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - impression_lower_bound
+      - impression_upper_bound
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+    GoogleTargeting:
+      type: object
+      properties:
+        region_codes:
+          description: Region codes the ad was shown in (Google-internal codes).
+          type: array
+          items:
+            type: string
+      required:
+      - region_codes
+    GoogleAd:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/ad/CR1234...
+        id_token:
+          type: string
+          example: google.ad.CR1234...
+        platform:
+          type: string
+          enum:
+          - google
+          example: google
+        advertiser:
+          $ref: '#/components/schemas/GoogleAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+          description: Shown within the last 30 days.
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        impression_lower_bound:
+          type:
+          - number
+          - 'null'
+        impression_upper_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - text
+          - unknown
+        headline:
+          type:
+          - string
+          - 'null'
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Creative description (truncated).
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        call_to_action:
+          type:
+          - string
+          - 'null'
+        destination_url:
+          type:
+          - string
+          - 'null'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleAdMedia'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          allOf:
+          - $ref: '#/components/schemas/GoogleTargeting'
+      required:
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - impression_lower_bound
+      - impression_upper_bound
+      - format
+      - headline
+      - primary_text
+      - thumbnail_url
+      - call_to_action
+      - destination_url
+      - media
+      - targeting
   securitySchemes:
     oauth:
       scheme: bearer

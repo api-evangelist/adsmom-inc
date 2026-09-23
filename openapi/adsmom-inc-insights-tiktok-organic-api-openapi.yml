@@ -182,6 +182,62 @@ components:
       - report
       - metrics
       - previous_metrics
+    SocialAccountInsight:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok-social/account/7100
+        id_token:
+          type: string
+          example: tiktok-social.account.7100
+        platform:
+          type: string
+          enum:
+          - tiktok-social
+          - instagram-social
+        status:
+          type: string
+          description: Generation status (e.g. completed, pending).
+        generated_at:
+          type:
+          - string
+          - 'null'
+        total_posts_analyzed:
+          type:
+          - number
+          - 'null'
+        page_summary:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        content_analysis:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        initial_assessment:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        recommendations:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+      required:
+      - gid
+      - id_token
+      - platform
+      - status
+      - generated_at
+      - total_posts_analyzed
+      - page_summary
+      - content_analysis
+      - initial_assessment
+      - recommendations
     TrackedSocialAccount:
       type: object
       properties:
@@ -263,62 +319,6 @@ components:
       - handle
       - name
       - follower_count
-    SocialAccountInsight:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok-social/account/7100
-        id_token:
-          type: string
-          example: tiktok-social.account.7100
-        platform:
-          type: string
-          enum:
-          - tiktok-social
-          - instagram-social
-        status:
-          type: string
-          description: Generation status (e.g. completed, pending).
-        generated_at:
-          type:
-          - string
-          - 'null'
-        total_posts_analyzed:
-          type:
-          - number
-          - 'null'
-        page_summary:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        content_analysis:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        initial_assessment:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        recommendations:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-      required:
-      - gid
-      - id_token
-      - platform
-      - status
-      - generated_at
-      - total_posts_analyzed
-      - page_summary
-      - content_analysis
-      - initial_assessment
-      - recommendations
     SocialAccountTrackBody:
       type: object
       properties:

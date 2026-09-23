@@ -191,29 +191,6 @@ paths:
       - Explore · Meta Ads
 components:
   schemas:
-    MetaReachTimeline:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - meta
-          example: meta
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaReachPoint'
-      required:
-      - gid
-      - id_token
-      - platform
-      - daily
     MetaAdSummary:
       type: object
       properties:
@@ -282,6 +259,69 @@ components:
       - headline
       - primary_text
       - thumbnail_url
+    MetaReachTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    MetaTargeting:
+      type: object
+      properties:
+        age_range:
+          type:
+          - string
+          - 'null'
+          example: 25-54
+        gender:
+          type:
+          - string
+          - 'null'
+          example: All
+        locations:
+          description: Targeted location names, when the source is a string list.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      required:
+      - age_range
+      - gender
+      - locations
+    MetaAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - name
     MetaAd:
       type: object
       properties:
@@ -427,46 +467,6 @@ components:
       required:
       - date
       - reach
-    MetaAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - name
-    MetaTargeting:
-      type: object
-      properties:
-        age_range:
-          type:
-          - string
-          - 'null'
-          example: 25-54
-        gender:
-          type:
-          - string
-          - 'null'
-          example: All
-        locations:
-          description: Targeted location names, when the source is a string list.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      required:
-      - age_range
-      - gender
-      - locations
   securitySchemes:
     oauth:
       scheme: bearer

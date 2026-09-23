@@ -56,6 +56,15 @@ components:
       - remaining
       - period_start
       - period_end
+    UsageRateLimit:
+      type: object
+      properties:
+        requests_per_minute:
+          type: number
+          description: Requests allowed per window.
+          example: 120
+      required:
+      - requests_per_minute
     Usage:
       type: object
       properties:
@@ -75,15 +84,6 @@ components:
       - tracked_advertisers
       - credits
       - rate_limit
-    UsageRateLimit:
-      type: object
-      properties:
-        requests_per_minute:
-          type: number
-          description: Requests allowed per window.
-          example: 120
-      required:
-      - requests_per_minute
   securitySchemes:
     oauth:
       scheme: bearer

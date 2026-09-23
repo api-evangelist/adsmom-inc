@@ -247,122 +247,6 @@ paths:
       - Explore · LinkedIn Ads
 components:
   schemas:
-    LinkedinImpressionsTimeline:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/linkedin/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: linkedin.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - linkedin
-          example: linkedin
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkedinImpressionsPoint'
-      required:
-      - gid
-      - id_token
-      - platform
-      - daily
-    LinkedinAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/linkedin/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: linkedin.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Microsoft
-        company_id:
-          type:
-          - string
-          - 'null'
-          description: LinkedIn /company/{id} key.
-      required:
-      - gid
-      - id_token
-      - name
-      - company_id
-    LinkedinCountryImpression:
-      type: object
-      properties:
-        country:
-          type: string
-          example: Germany
-        percent:
-          type:
-          - number
-          - 'null'
-          description: Impression share, percent (LinkedIn reports shares, not counts).
-          example: 34
-      required:
-      - country
-      - percent
-    LinkedinAdMediaAnalysis:
-      type: object
-      properties:
-        language:
-          type:
-          - string
-          - 'null'
-        description:
-          type:
-          - string
-          - 'null'
-        sentiment:
-          type:
-          - string
-          - 'null'
-        hook_type:
-          type:
-          - string
-          - 'null'
-        content_format:
-          type:
-          - string
-          - 'null'
-        cta_type:
-          type:
-          - string
-          - 'null'
-        has_text_overlay:
-          type:
-          - boolean
-          - 'null'
-        topics:
-          type: array
-          items:
-            type: string
-        on_screen_text:
-          type:
-          - string
-          - 'null'
-          description: On-screen text. Only with `include=transcript`.
-        spoken_content:
-          type:
-          - string
-          - 'null'
-          description: Spoken transcript. Only with `include=transcript`.
-      required:
-      - language
-      - description
-      - sentiment
-      - hook_type
-      - content_format
-      - cta_type
-      - has_text_overlay
-      - topics
-      - on_screen_text
-      - spoken_content
     LinkedinTargeting:
       type: object
       properties:
@@ -377,62 +261,6 @@ components:
       required:
       - segments
       - parameters
-    LinkedinAdSnapshot:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
-        captured_at:
-          type: string
-          description: When this capture was taken (ISO 8601).
-        is_active:
-          type:
-          - boolean
-          - 'null'
-        total_impressions:
-          type:
-          - string
-          - 'null'
-          description: Raw impressions bracket as displayed (e.g. "10k-50k").
-        impressions_lower_bound:
-          type:
-          - number
-          - 'null'
-        impressions_upper_bound:
-          type:
-          - number
-          - 'null'
-        country_impressions:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkedinCountryImpression'
-      required:
-      - uuid
-      - captured_at
-      - is_active
-      - total_impressions
-      - impressions_lower_bound
-      - impressions_upper_bound
-      - country_impressions
-    LinkedinTargetingSegment:
-      type: object
-      properties:
-        category:
-          type: string
-          example: Location
-        visible:
-          type:
-          - string
-          - 'null'
-        hidden:
-          type:
-          - string
-          - 'null'
-      required:
-      - category
-      - visible
-      - hidden
     LinkedinAdSummary:
       type: object
       properties:
@@ -517,44 +345,6 @@ components:
       - format
       - primary_text
       - thumbnail_url
-    LinkedinAdMedia:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - video
-          - image
-        media_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min).
-        cover_image_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min).
-        analysis_status:
-          type: string
-          enum:
-          - pending
-          - processing
-          - completed
-          - failed
-          description: Creative-analysis pipeline status.
-        analysis:
-          allOf:
-          - $ref: '#/components/schemas/LinkedinAdMediaAnalysis'
-      required:
-      - id
-      - type
-      - media_url
-      - cover_image_url
-      - analysis_status
-      - analysis
     LinkedinAd:
       type: object
       properties:
@@ -691,6 +481,155 @@ components:
       - country_impressions
       - media
       - targeting
+    LinkedinAdSnapshot:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
+        captured_at:
+          type: string
+          description: When this capture was taken (ISO 8601).
+        is_active:
+          type:
+          - boolean
+          - 'null'
+        total_impressions:
+          type:
+          - string
+          - 'null'
+          description: Raw impressions bracket as displayed (e.g. "10k-50k").
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+        country_impressions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinCountryImpression'
+      required:
+      - uuid
+      - captured_at
+      - is_active
+      - total_impressions
+      - impressions_lower_bound
+      - impressions_upper_bound
+      - country_impressions
+    LinkedinCountryImpression:
+      type: object
+      properties:
+        country:
+          type: string
+          example: Germany
+        percent:
+          type:
+          - number
+          - 'null'
+          description: Impression share, percent (LinkedIn reports shares, not counts).
+          example: 34
+      required:
+      - country
+      - percent
+    LinkedinAdMediaAnalysis:
+      type: object
+      properties:
+        language:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        sentiment:
+          type:
+          - string
+          - 'null'
+        hook_type:
+          type:
+          - string
+          - 'null'
+        content_format:
+          type:
+          - string
+          - 'null'
+        cta_type:
+          type:
+          - string
+          - 'null'
+        has_text_overlay:
+          type:
+          - boolean
+          - 'null'
+        topics:
+          type: array
+          items:
+            type: string
+        on_screen_text:
+          type:
+          - string
+          - 'null'
+          description: On-screen text. Only with `include=transcript`.
+        spoken_content:
+          type:
+          - string
+          - 'null'
+          description: Spoken transcript. Only with `include=transcript`.
+      required:
+      - language
+      - description
+      - sentiment
+      - hook_type
+      - content_format
+      - cta_type
+      - has_text_overlay
+      - topics
+      - on_screen_text
+      - spoken_content
+    LinkedinAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Microsoft
+        company_id:
+          type:
+          - string
+          - 'null'
+          description: LinkedIn /company/{id} key.
+      required:
+      - gid
+      - id_token
+      - name
+      - company_id
+    LinkedinTargetingSegment:
+      type: object
+      properties:
+        category:
+          type: string
+          example: Location
+        visible:
+          type:
+          - string
+          - 'null'
+        hidden:
+          type:
+          - string
+          - 'null'
+      required:
+      - category
+      - visible
+      - hidden
     LinkedinImpressionsPoint:
       type: object
       properties:
@@ -725,6 +664,67 @@ components:
       - parameter
       - targeted
       - excluded
+    LinkedinAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        cover_image_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        analysis_status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          description: Creative-analysis pipeline status.
+        analysis:
+          allOf:
+          - $ref: '#/components/schemas/LinkedinAdMediaAnalysis'
+      required:
+      - id
+      - type
+      - media_url
+      - cover_image_url
+      - analysis_status
+      - analysis
+    LinkedinImpressionsTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - linkedin
+          example: linkedin
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinImpressionsPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
   securitySchemes:
     oauth:
       scheme: bearer

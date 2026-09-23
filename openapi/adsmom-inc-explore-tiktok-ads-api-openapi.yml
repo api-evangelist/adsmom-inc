@@ -247,6 +247,105 @@ paths:
       - Explore · TikTok Ads
 components:
   schemas:
+    TiktokAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - tiktok
+          example: tiktok
+        api_id:
+          type: string
+          description: TikTok-native ad id.
+          example: 17420...
+        advertiser:
+          $ref: '#/components/schemas/TiktokAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Last-shown date; null while active.
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Ad description.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+      required:
+      - gid
+      - id_token
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+    TiktokAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+        api_business_id:
+          type:
+          - string
+          - 'null'
+          description: TikTok-native business id.
+        username:
+          type:
+          - string
+          - 'null'
+          example: '@kaufland'
+      required:
+      - gid
+      - id_token
+      - name
+      - api_business_id
+      - username
     TiktokReachTimeline:
       type: object
       properties:
@@ -270,6 +369,30 @@ components:
       - id_token
       - platform
       - daily
+    TiktokReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    TiktokRegionReach:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        reach:
+          type: number
+          example: 120000
+      required:
+      - region_code
+      - reach
     TiktokAdMedia:
       type: object
       properties:
@@ -391,89 +514,6 @@ components:
       - brand_names
       - on_screen_text
       - spoken_content
-    TiktokRegionReach:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        reach:
-          type: number
-          example: 120000
-      required:
-      - region_code
-      - reach
-    TiktokAdSummary:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: tiktok.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - tiktok
-          example: tiktok
-        api_id:
-          type: string
-          description: TikTok-native ad id.
-          example: 17420...
-        advertiser:
-          $ref: '#/components/schemas/TiktokAdvertiserRef'
-        is_active:
-          type: boolean
-          example: true
-        start_date:
-          type:
-          - string
-          - 'null'
-          example: '2026-05-01'
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: Last-shown date; null while active.
-        reach_upper_bound:
-          type:
-          - number
-          - 'null'
-        reach_lower_bound:
-          type:
-          - number
-          - 'null'
-        format:
-          type: string
-          enum:
-          - video
-          - image
-          - unknown
-        primary_text:
-          type:
-          - string
-          - 'null'
-          description: Ad description.
-        thumbnail_url:
-          type:
-          - string
-          - 'null'
-          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
-      required:
-      - gid
-      - id_token
-      - platform
-      - api_id
-      - advertiser
-      - is_active
-      - start_date
-      - end_date
-      - reach_upper_bound
-      - reach_lower_bound
-      - format
-      - primary_text
-      - thumbnail_url
     TiktokAdSnapshot:
       type: object
       properties:
@@ -510,50 +550,6 @@ components:
       - reach_upper_bound
       - reach_lower_bound
       - region_reach
-    TiktokTargeting:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        age_range:
-          type: string
-          example: 25-34
-        gender:
-          type: string
-          example: female
-      required:
-      - region_code
-      - age_range
-      - gender
-    TiktokAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: tiktok.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-        api_business_id:
-          type:
-          - string
-          - 'null'
-          description: TikTok-native business id.
-        username:
-          type:
-          - string
-          - 'null'
-          example: '@kaufland'
-      required:
-      - gid
-      - id_token
-      - name
-      - api_business_id
-      - username
     TiktokAd:
       type: object
       properties:
@@ -644,18 +640,22 @@ components:
       - media
       - region_reach
       - targeting
-    TiktokReachPoint:
+    TiktokTargeting:
       type: object
       properties:
-        date:
+        region_code:
           type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
+          example: US
+        age_range:
+          type: string
+          example: 25-34
+        gender:
+          type: string
+          example: female
       required:
-      - date
-      - reach
+      - region_code
+      - age_range
+      - gender
   securitySchemes:
     oauth:
       scheme: bearer

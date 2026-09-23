@@ -135,6 +135,91 @@ paths:
       - Insights · TikTok
 components:
   schemas:
+    TiktokTrackBody:
+      type: object
+      properties:
+        ad_id:
+          type: string
+          description: A TikTok ad api_id; the parent advertiser is resolved from it server-side.
+      required:
+      - ad_id
+    WeeklyReport:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        week_start:
+          type: string
+          example: '2026-06-15'
+        week_end:
+          type: string
+          example: '2026-06-21'
+        created_at:
+          type:
+          - string
+          - 'null'
+        report:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        metrics:
+          type:
+          - object
+          - 'null'
+        previous_metrics:
+          type:
+          - object
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - week_start
+      - week_end
+      - created_at
+      - report
+      - metrics
+      - previous_metrics
+    Advertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+          example: tiktok
+        name:
+          type: string
+          description: Advertiser / page display name.
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
     AdvertiserInsight:
       type: object
       properties:
@@ -236,91 +321,6 @@ components:
       - is_active
       - pending_ingest
       - tracked_at
-    TiktokTrackBody:
-      type: object
-      properties:
-        ad_id:
-          type: string
-          description: A TikTok ad api_id; the parent advertiser is resolved from it server-side.
-      required:
-      - ad_id
-    WeeklyReport:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        week_start:
-          type: string
-          example: '2026-06-15'
-        week_end:
-          type: string
-          example: '2026-06-21'
-        created_at:
-          type:
-          - string
-          - 'null'
-        report:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        metrics:
-          type:
-          - object
-          - 'null'
-        previous_metrics:
-          type:
-          - object
-          - 'null'
-      required:
-      - gid
-      - id_token
-      - platform
-      - week_start
-      - week_end
-      - created_at
-      - report
-      - metrics
-      - previous_metrics
-    Advertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          description: Canonical global id. Use the slash-free form in path params.
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          description: Slash-free id token for use in URL path segments.
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-          example: tiktok
-        name:
-          type: string
-          description: Advertiser / page display name.
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
   securitySchemes:
     oauth:
       scheme: bearer

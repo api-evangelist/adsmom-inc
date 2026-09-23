@@ -1,0 +1,60 @@
+{
+  "provider": "adsmom-inc",
+  "sources": [
+    "_original/adsmom-inc-openapi.json"
+  ],
+  "outputs": [
+    "adsmom-inc-account-api-openapi.yml",
+    "adsmom-inc-analytics-google-api-openapi.yml",
+    "adsmom-inc-analytics-meta-api-openapi.yml",
+    "adsmom-inc-analytics-tiktok-api-openapi.yml",
+    "adsmom-inc-explore-google-ads-api-openapi.yml",
+    "adsmom-inc-explore-linkedin-ads-api-openapi.yml",
+    "adsmom-inc-explore-meta-ads-api-openapi.yml",
+    "adsmom-inc-explore-tiktok-ads-api-openapi.yml",
+    "adsmom-inc-insights-google-api-openapi.yml",
+    "adsmom-inc-insights-instagram-organic-api-openapi.yml",
+    "adsmom-inc-insights-linkedin-api-openapi.yml",
+    "adsmom-inc-insights-meta-api-openapi.yml",
+    "adsmom-inc-insights-tiktok-api-openapi.yml",
+    "adsmom-inc-insights-tiktok-organic-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "adsmom-inc-openapi.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "adsmom-inc-openapi.json: declared missing tag: Account",
+    "adsmom-inc-openapi.json: declared missing tag: Analytics \u00b7 Google",
+    "adsmom-inc-openapi.json: declared missing tag: Analytics \u00b7 Meta",
+    "adsmom-inc-openapi.json: declared missing tag: Analytics \u00b7 TikTok",
+    "adsmom-inc-openapi.json: declared missing tag: Explore \u00b7 Google Ads",
+    "adsmom-inc-openapi.json: declared missing tag: Explore \u00b7 LinkedIn Ads",
+    "adsmom-inc-openapi.json: declared missing tag: Explore \u00b7 Meta Ads",
+    "adsmom-inc-openapi.json: declared missing tag: Explore \u00b7 TikTok Ads",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 Google",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 Instagram Organic",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 LinkedIn",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 Meta",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 TikTok",
+    "adsmom-inc-openapi.json: declared missing tag: Insights \u00b7 TikTok Organic",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "adsmom-inc-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-analytics-google-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-analytics-meta-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-analytics-tiktok-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-explore-google-ads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-explore-linkedin-ads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-explore-meta-ads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-explore-tiktok-ads-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-google-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-instagram-organic-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-linkedin-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-meta-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-tiktok-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "adsmom-inc-insights-tiktok-organic-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

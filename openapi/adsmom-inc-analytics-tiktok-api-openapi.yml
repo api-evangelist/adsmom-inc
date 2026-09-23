@@ -475,6 +475,15 @@ paths:
       - Analytics · TikTok
 components:
   schemas:
+    TiktokTargetingChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokTargetingRegion'
+      required:
+      - regions
     TiktokActivityChart:
       type: object
       properties:
@@ -484,27 +493,41 @@ components:
             $ref: '#/components/schemas/TiktokActivitySeries'
       required:
       - series
-    TiktokActivitySeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        points:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokActivityPoint'
-      required:
-      - advertiser
-      - points
-    TiktokCreativeChart:
+    TiktokReachChart:
       type: object
       properties:
         series:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokCreativeSeries'
+            $ref: '#/components/schemas/TiktokReachSeries'
       required:
       - series
+    TiktokRuntimeChart:
+      type: object
+      properties:
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRuntimeSeries'
+        optimal:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokOptimalRuntimeEntry'
+      required:
+      - distribution
+      - optimal
+    CreativeMixEntry:
+      type: object
+      properties:
+        value:
+          type: string
+          example: problem_solution
+        count:
+          type: number
+          example: 42
+      required:
+      - value
+      - count
     TiktokCreativeDimensionSeries:
       type: object
       properties:
@@ -517,57 +540,48 @@ components:
       required:
       - advertiser
       - breakdown
-    TiktokReachRegionsChart:
+    TiktokCreativeSeries:
       type: object
       properties:
-        series:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        hook_types:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokReachRegionSeries'
-      required:
-      - series
-    TiktokRegionsChart:
-      type: object
-      properties:
-        regions:
+            $ref: '#/components/schemas/CreativeMixEntry'
+        content_formats:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokRegion'
+            $ref: '#/components/schemas/CreativeMixEntry'
+        audio_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreativeMixEntry'
       required:
-      - regions
-    RuntimeBucket:
+      - advertiser
+      - hook_types
+      - content_formats
+      - audio_types
+    TiktokShareOfVoiceEntry:
       type: object
       properties:
-        label:
-          type: string
-          example: 8-14d
-        count:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        total_reach:
           type: number
-          example: 23
-      required:
-      - label
-      - count
-    TiktokTargetingChart:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokTargetingRegion'
-      required:
-      - regions
-    TiktokReachPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        reach:
+          example: 4820000
+        total_ads:
           type: number
-          example: 84000
+          example: 124
+        percentage:
+          type: number
+          description: Share of the set total (0..100).
+          example: 38.4
       required:
-      - date
-      - reach
+      - advertiser
+      - total_reach
+      - total_ads
+      - percentage
     TiktokCreativeDimensionChart:
       type: object
       properties:
@@ -584,32 +598,72 @@ components:
       required:
       - dimension
       - series
-    TiktokRegion:
+    TiktokReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    TiktokReachSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachPoint'
+      required:
+      - advertiser
+      - points
+    TiktokCreativeChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokCreativeSeries'
+      required:
+      - series
+    TiktokRegionImpressions:
       type: object
       properties:
         region_code:
           type: string
           example: US
-        ad_count:
+        impressions:
           type: number
-          example: 84
+          example: 920000
       required:
       - region_code
-      - ad_count
-    TiktokRuntimeChart:
+      - impressions
+    TiktokReachRegionSeries:
       type: object
       properties:
-        distribution:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        regions:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokRuntimeSeries'
-        optimal:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokOptimalRuntimeEntry'
+            $ref: '#/components/schemas/TiktokRegionImpressions'
       required:
-      - distribution
-      - optimal
+      - advertiser
+      - regions
+    TiktokRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegion'
+      required:
+      - regions
     TiktokOptimalRuntimeEntry:
       type: object
       properties:
@@ -626,7 +680,7 @@ components:
       - label
       - avg_reach
       - ad_count
-    TiktokReachSeries:
+    TiktokActivitySeries:
       type: object
       properties:
         advertiser:
@@ -634,34 +688,101 @@ components:
         points:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokReachPoint'
+            $ref: '#/components/schemas/TiktokActivityPoint'
       required:
       - advertiser
       - points
-    CreativeMixEntry:
+    TiktokActivityPoint:
       type: object
       properties:
-        value:
+        period_start:
           type: string
-          example: problem_solution
-        count:
+          example: '2026-05-01'
+        period_end:
+          type: string
+          example: '2026-05-08'
+        new_ads:
           type: number
-          example: 42
+          example: 12
+        active_ads:
+          type: number
+          example: 47
       required:
-      - value
-      - count
-    TiktokReachRegionSeries:
+      - period_start
+      - period_end
+      - new_ads
+      - active_ads
+    TiktokTargetingRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        advertisers:
+          description: Display names of tracked advertisers targeting this region.
+          example:
+          - Kaufland
+          - Lidl
+          type: array
+          items:
+            type: string
+      required:
+      - region_code
+      - advertisers
+    TiktokShareOfVoiceChart:
+      type: object
+      properties:
+        advertisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokShareOfVoiceEntry'
+      required:
+      - advertisers
+    TiktokRuntimeSeries:
       type: object
       properties:
         advertiser:
           $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        regions:
+        buckets:
           type: array
           items:
-            $ref: '#/components/schemas/TiktokRegionImpressions'
+            $ref: '#/components/schemas/RuntimeBucket'
       required:
       - advertiser
-      - regions
+      - buckets
+    RuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+      required:
+      - label
+      - count
+    TiktokRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 84
+      required:
+      - region_code
+      - ad_count
+    TiktokReachRegionsChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachRegionSeries'
+      required:
+      - series
     AnalyticsAdvertiserRef:
       type: object
       properties:
@@ -686,127 +807,6 @@ components:
       - id_token
       - platform
       - name
-    TiktokRuntimeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/RuntimeBucket'
-      required:
-      - advertiser
-      - buckets
-    TiktokActivityPoint:
-      type: object
-      properties:
-        period_start:
-          type: string
-          example: '2026-05-01'
-        period_end:
-          type: string
-          example: '2026-05-08'
-        new_ads:
-          type: number
-          example: 12
-        active_ads:
-          type: number
-          example: 47
-      required:
-      - period_start
-      - period_end
-      - new_ads
-      - active_ads
-    TiktokShareOfVoiceEntry:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        total_reach:
-          type: number
-          example: 4820000
-        total_ads:
-          type: number
-          example: 124
-        percentage:
-          type: number
-          description: Share of the set total (0..100).
-          example: 38.4
-      required:
-      - advertiser
-      - total_reach
-      - total_ads
-      - percentage
-    TiktokCreativeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        hook_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreativeMixEntry'
-        content_formats:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreativeMixEntry'
-        audio_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/CreativeMixEntry'
-      required:
-      - advertiser
-      - hook_types
-      - content_formats
-      - audio_types
-    TiktokReachChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokReachSeries'
-      required:
-      - series
-    TiktokShareOfVoiceChart:
-      type: object
-      properties:
-        advertisers:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokShareOfVoiceEntry'
-      required:
-      - advertisers
-    TiktokRegionImpressions:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        impressions:
-          type: number
-          example: 920000
-      required:
-      - region_code
-      - impressions
-    TiktokTargetingRegion:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        advertisers:
-          description: Display names of tracked advertisers targeting this region.
-          example:
-          - Kaufland
-          - Lidl
-          type: array
-          items:
-            type: string
-      required:
-      - region_code
-      - advertisers
   securitySchemes:
     oauth:
       scheme: bearer
