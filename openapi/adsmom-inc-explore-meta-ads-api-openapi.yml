@@ -191,137 +191,43 @@ paths:
       - Explore · Meta Ads
 components:
   schemas:
-    MetaAdSummary:
+    MetaAdMedia:
       type: object
       properties:
-        gid:
+        id:
           type: string
-          example: gid://adsmom/facebook/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - meta
-          example: meta
-        advertiser:
-          $ref: '#/components/schemas/MetaAdvertiserRef'
-        is_active:
-          type: boolean
-          example: true
-        start_date:
-          type:
-          - string
-          - 'null'
-          example: '2026-05-01'
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: Delivery stop date; null while active.
-        reach_total:
-          type:
-          - number
-          - 'null'
-          description: Lifetime breakdown reach from the Meta Ad Library.
-        format:
+        type:
           type: string
           enum:
           - video
           - image
-          - unknown
-        headline:
+        media_url:
           type:
           - string
           - 'null'
-          description: First creative link title.
-        primary_text:
-          type:
-          - string
-          - 'null'
-          description: First creative body (truncated).
+          description: Signed (~10 min). Video only.
         thumbnail_url:
           type:
           - string
           - 'null'
-          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+          description: Signed (~10 min).
       required:
-      - gid
-      - id_token
-      - platform
-      - advertiser
-      - is_active
-      - start_date
-      - end_date
-      - reach_total
-      - format
-      - headline
-      - primary_text
+      - id
+      - type
+      - media_url
       - thumbnail_url
-    MetaReachTimeline:
+    MetaReachPoint:
       type: object
       properties:
-        gid:
+        date:
           type: string
-          example: gid://adsmom/facebook/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - meta
-          example: meta
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaReachPoint'
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
       required:
-      - gid
-      - id_token
-      - platform
-      - daily
-    MetaTargeting:
-      type: object
-      properties:
-        age_range:
-          type:
-          - string
-          - 'null'
-          example: 25-54
-        gender:
-          type:
-          - string
-          - 'null'
-          example: All
-        locations:
-          description: Targeted location names, when the source is a string list.
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-      required:
-      - age_range
-      - gender
-      - locations
-    MetaAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - name
+      - date
+      - reach
     MetaAd:
       type: object
       properties:
@@ -430,43 +336,137 @@ components:
       - languages
       - media
       - targeting
-    MetaAdMedia:
+    MetaReachTimeline:
       type: object
       properties:
-        id:
+        gid:
           type: string
-        type:
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    MetaTargeting:
+      type: object
+      properties:
+        age_range:
+          type:
+          - string
+          - 'null'
+          example: 25-54
+        gender:
+          type:
+          - string
+          - 'null'
+          example: All
+        locations:
+          description: Targeted location names, when the source is a string list.
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+      required:
+      - age_range
+      - gender
+      - locations
+    MetaAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - name
+    MetaAdSummary:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        advertiser:
+          $ref: '#/components/schemas/MetaAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
+          type:
+          - string
+          - 'null'
+          example: '2026-05-01'
+        end_date:
+          type:
+          - string
+          - 'null'
+          description: Delivery stop date; null while active.
+        reach_total:
+          type:
+          - number
+          - 'null'
+          description: Lifetime breakdown reach from the Meta Ad Library.
+        format:
           type: string
           enum:
           - video
           - image
-        media_url:
+          - unknown
+        headline:
           type:
           - string
           - 'null'
-          description: Signed (~10 min). Video only.
+          description: First creative link title.
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: First creative body (truncated).
         thumbnail_url:
           type:
           - string
           - 'null'
-          description: Signed (~10 min).
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
       required:
-      - id
-      - type
-      - media_url
+      - gid
+      - id_token
+      - platform
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_total
+      - format
+      - headline
+      - primary_text
       - thumbnail_url
-    MetaReachPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
-      required:
-      - date
-      - reach
   securitySchemes:
     oauth:
       scheme: bearer

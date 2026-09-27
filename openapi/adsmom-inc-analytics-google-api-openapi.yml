@@ -373,145 +373,6 @@ paths:
       - Analytics · Google
 components:
   schemas:
-    GoogleImpressionRange:
-      type: object
-      properties:
-        lower_bound:
-          type: number
-          example: 100000
-        upper_bound:
-          type: number
-          example: 1000000
-      required:
-      - lower_bound
-      - upper_bound
-    GoogleStatsChart:
-      type: object
-      properties:
-        advertisers:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleStatsEntry'
-      required:
-      - advertisers
-    GoogleRuntimeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/RuntimeBucket'
-      required:
-      - advertiser
-      - buckets
-    GoogleOptimalRuntimeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleOptimalRuntimeBucket'
-      required:
-      - advertiser
-      - buckets
-    GoogleActivitySeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        points:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleActivityPoint'
-      required:
-      - advertiser
-      - points
-    GoogleCreativeChart:
-      type: object
-      properties:
-        dimension:
-          type: string
-          example: content_format
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleCreativeSeries'
-      required:
-      - dimension
-      - series
-    GoogleRegionsChart:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleRegion'
-      required:
-      - regions
-    GoogleShareOfVoiceSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        ad_count:
-          type: number
-          example: 124
-        awaiting_count:
-          type: number
-          description: Ads still awaiting an impression estimate.
-          example: 6
-        total_reach:
-          type: number
-          example: 4820000
-        gini:
-          type: number
-          description: Gini coefficient (0..1).
-          example: 0.62
-        lorenz:
-          type: array
-          items:
-            $ref: '#/components/schemas/ConcentrationPoint'
-      required:
-      - advertiser
-      - ad_count
-      - awaiting_count
-      - total_reach
-      - gini
-      - lorenz
-    GoogleRegion:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        ad_count:
-          type: number
-          example: 84
-      required:
-      - region_code
-      - ad_count
-    GoogleRegionImpression:
-      type: object
-      properties:
-        region_code:
-          type:
-          - string
-          - 'null'
-          example: US
-        lower_bound:
-          type: number
-          example: 100000
-        upper_bound:
-          type: number
-          example: 1000000
-      required:
-      - region_code
-      - lower_bound
-      - upper_bound
     GoogleActivityPoint:
       type: object
       properties:
@@ -533,94 +394,6 @@ components:
       - new_ads
       - active_ads
       - impressions
-    ConcentrationPoint:
-      type: object
-      properties:
-        pct_ads:
-          type: number
-          description: Cumulative share of ads (0..1).
-          example: 0.2
-        pct_reach:
-          type: number
-          description: Cumulative share of reach (0..1).
-          example: 0.65
-      required:
-      - pct_ads
-      - pct_reach
-    GoogleActivityChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleActivitySeries'
-      required:
-      - series
-    GoogleCreativeBucket:
-      type: object
-      properties:
-        value:
-          type: string
-          example: video
-        count:
-          type: number
-          example: 42
-        impressions:
-          type: number
-          example: 142000
-      required:
-      - value
-      - count
-      - impressions
-    RuntimeBucket:
-      type: object
-      properties:
-        label:
-          type: string
-          example: 8-14d
-        count:
-          type: number
-          example: 23
-      required:
-      - label
-      - count
-    GoogleSurfaceImpression:
-      type: object
-      properties:
-        surface:
-          type: string
-          example: YOUTUBE
-        lower_bound:
-          type: number
-          example: 100000
-        upper_bound:
-          type: number
-          example: 1000000
-      required:
-      - surface
-      - lower_bound
-      - upper_bound
-    GoogleCreativeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        breakdown:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleCreativeBucket'
-      required:
-      - advertiser
-      - breakdown
-    GoogleShareOfVoiceChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleShareOfVoiceSeries'
-      required:
-      - series
     GoogleStatsEntry:
       type: object
       properties:
@@ -670,7 +443,97 @@ components:
       - total_impressions
       - regions
       - surfaces
-    GoogleOptimalRuntimeBucket:
+    GoogleCreativeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        breakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleCreativeBucket'
+      required:
+      - advertiser
+      - breakdown
+    GoogleRegionImpression:
+      type: object
+      properties:
+        region_code:
+          type:
+          - string
+          - 'null'
+          example: US
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - region_code
+      - lower_bound
+      - upper_bound
+    GoogleCreativeBucket:
+      type: object
+      properties:
+        value:
+          type: string
+          example: video
+        count:
+          type: number
+          example: 42
+        impressions:
+          type: number
+          example: 142000
+      required:
+      - value
+      - count
+      - impressions
+    GoogleRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRegion'
+      required:
+      - regions
+    GoogleActivityChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleActivitySeries'
+      required:
+      - series
+    GoogleRuntimeChart:
+      type: object
+      properties:
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRuntimeSeries'
+        optimal:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeSeries'
+      required:
+      - distribution
+      - optimal
+    GoogleImpressionRange:
+      type: object
+      properties:
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - lower_bound
+      - upper_bound
+    RuntimeBucket:
       type: object
       properties:
         label:
@@ -679,13 +542,30 @@ components:
         count:
           type: number
           example: 23
-        avg_impressions:
-          type: number
-          example: 142000
       required:
       - label
       - count
-      - avg_impressions
+    GoogleActivitySeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleActivityPoint'
+      required:
+      - advertiser
+      - points
+    GoogleShareOfVoiceChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleShareOfVoiceSeries'
+      required:
+      - series
     AnalyticsAdvertiserRef:
       type: object
       properties:
@@ -710,20 +590,140 @@ components:
       - id_token
       - platform
       - name
-    GoogleRuntimeChart:
+    GoogleStatsChart:
       type: object
       properties:
-        distribution:
+        advertisers:
           type: array
           items:
-            $ref: '#/components/schemas/GoogleRuntimeSeries'
-        optimal:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleOptimalRuntimeSeries'
+            $ref: '#/components/schemas/GoogleStatsEntry'
       required:
-      - distribution
-      - optimal
+      - advertisers
+    GoogleOptimalRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeBucket'
+      required:
+      - advertiser
+      - buckets
+    GoogleRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 84
+      required:
+      - region_code
+      - ad_count
+    GoogleCreativeChart:
+      type: object
+      properties:
+        dimension:
+          type: string
+          example: content_format
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleCreativeSeries'
+      required:
+      - dimension
+      - series
+    GoogleSurfaceImpression:
+      type: object
+      properties:
+        surface:
+          type: string
+          example: YOUTUBE
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - surface
+      - lower_bound
+      - upper_bound
+    GoogleOptimalRuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+        avg_impressions:
+          type: number
+          example: 142000
+      required:
+      - label
+      - count
+      - avg_impressions
+    GoogleShareOfVoiceSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        ad_count:
+          type: number
+          example: 124
+        awaiting_count:
+          type: number
+          description: Ads still awaiting an impression estimate.
+          example: 6
+        total_reach:
+          type: number
+          example: 4820000
+        gini:
+          type: number
+          description: Gini coefficient (0..1).
+          example: 0.62
+        lorenz:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConcentrationPoint'
+      required:
+      - advertiser
+      - ad_count
+      - awaiting_count
+      - total_reach
+      - gini
+      - lorenz
+    GoogleRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RuntimeBucket'
+      required:
+      - advertiser
+      - buckets
+    ConcentrationPoint:
+      type: object
+      properties:
+        pct_ads:
+          type: number
+          description: Cumulative share of ads (0..1).
+          example: 0.2
+        pct_reach:
+          type: number
+          description: Cumulative share of reach (0..1).
+          example: 0.65
+      required:
+      - pct_ads
+      - pct_reach
   securitySchemes:
     oauth:
       scheme: bearer

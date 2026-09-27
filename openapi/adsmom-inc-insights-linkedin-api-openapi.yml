@@ -135,6 +135,61 @@ paths:
       - Insights · LinkedIn
 components:
   schemas:
+    LinkedinTrackBody:
+      type: object
+      properties:
+        company_id:
+          type: string
+          description: Exact LinkedIn /company/{id} key (numeric id or vanity slug).
+        company_url:
+          type: string
+          description: LinkedIn company URL, e.g. https://www.linkedin.com/company/microsoft/. The /company/ segment is used as the exact key.
+        name:
+          type: string
+          description: Advertiser display name. Must uniquely match an already-discovered advertiser; otherwise a discovery crawl is started and the request should be retried.
+    TrackedAdvertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        name:
+          type: string
+          example: Kaufland
+        external_id:
+          type:
+          - string
+          - 'null'
+          description: Platform-native business id, when resolved.
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+      - external_id
+      - is_active
+      - pending_ingest
+      - tracked_at
     WeeklyReport:
       type: object
       properties:
@@ -184,46 +239,6 @@ components:
       - report
       - metrics
       - previous_metrics
-    LinkedinTrackBody:
-      type: object
-      properties:
-        company_id:
-          type: string
-          description: Exact LinkedIn /company/{id} key (numeric id or vanity slug).
-        company_url:
-          type: string
-          description: LinkedIn company URL, e.g. https://www.linkedin.com/company/microsoft/. The /company/ segment is used as the exact key.
-        name:
-          type: string
-          description: Advertiser display name. Must uniquely match an already-discovered advertiser; otherwise a discovery crawl is started and the request should be retried.
-    Advertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          description: Canonical global id. Use the slash-free form in path params.
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          description: Slash-free id token for use in URL path segments.
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-          example: tiktok
-        name:
-          type: string
-          description: Advertiser / page display name.
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
     AdvertiserInsight:
       type: object
       properties:
@@ -282,15 +297,17 @@ components:
       - ad_analysis
       - initial_assessment
       - recommendations
-    TrackedAdvertiser:
+    Advertiser:
       type: object
       properties:
         gid:
           type: string
-          example: gid://adsmom/tiktok/advertiser/7100
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok/advertiser/123456
         id_token:
           type: string
-          example: tiktok.advertiser.7100
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok.advertiser.123456
         platform:
           type: string
           enum:
@@ -298,33 +315,16 @@ components:
           - tiktok
           - google
           - linkedin
+          example: tiktok
         name:
           type: string
+          description: Advertiser / page display name.
           example: Kaufland
-        external_id:
-          type:
-          - string
-          - 'null'
-          description: Platform-native business id, when resolved.
-        is_active:
-          type: boolean
-          example: true
-        pending_ingest:
-          type: boolean
-          description: True when the ingest crawl has not completed yet.
-        tracked_at:
-          type:
-          - string
-          - 'null'
       required:
       - gid
       - id_token
       - platform
       - name
-      - external_id
-      - is_active
-      - pending_ingest
-      - tracked_at
   securitySchemes:
     oauth:
       scheme: bearer

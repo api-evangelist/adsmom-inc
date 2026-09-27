@@ -247,6 +247,34 @@ paths:
       - Explore · TikTok Ads
 components:
   schemas:
+    TiktokReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    TiktokTargeting:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        age_range:
+          type: string
+          example: 25-34
+        gender:
+          type: string
+          example: female
+      required:
+      - region_code
+      - age_range
+      - gender
     TiktokAdSummary:
       type: object
       properties:
@@ -318,34 +346,18 @@ components:
       - format
       - primary_text
       - thumbnail_url
-    TiktokAdvertiserRef:
+    TiktokRegionReach:
       type: object
       properties:
-        gid:
+        region_code:
           type: string
-          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: tiktok.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-        api_business_id:
-          type:
-          - string
-          - 'null'
-          description: TikTok-native business id.
-        username:
-          type:
-          - string
-          - 'null'
-          example: '@kaufland'
+          example: US
+        reach:
+          type: number
+          example: 120000
       required:
-      - gid
-      - id_token
-      - name
-      - api_business_id
-      - username
+      - region_code
+      - reach
     TiktokReachTimeline:
       type: object
       properties:
@@ -369,30 +381,42 @@ components:
       - id_token
       - platform
       - daily
-    TiktokReachPoint:
+    TiktokAdSnapshot:
       type: object
       properties:
-        date:
+        uuid:
           type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
-      required:
-      - date
-      - reach
-    TiktokRegionReach:
-      type: object
-      properties:
-        region_code:
+          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
+        captured_at:
           type: string
-          example: US
-        reach:
-          type: number
-          example: 120000
+          description: When this capture was taken (ISO 8601).
+        is_active:
+          type: boolean
+          example: true
+        last_shown_date:
+          type:
+          - string
+          - 'null'
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        region_reach:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegionReach'
       required:
-      - region_code
-      - reach
+      - uuid
+      - captured_at
+      - is_active
+      - last_shown_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - region_reach
     TiktokAdMedia:
       type: object
       properties:
@@ -514,42 +538,34 @@ components:
       - brand_names
       - on_screen_text
       - spoken_content
-    TiktokAdSnapshot:
+    TiktokAdvertiserRef:
       type: object
       properties:
-        uuid:
+        gid:
           type: string
-          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
-        captured_at:
+          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
+        id_token:
           type: string
-          description: When this capture was taken (ISO 8601).
-        is_active:
-          type: boolean
-          example: true
-        last_shown_date:
+          example: tiktok.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+        api_business_id:
           type:
           - string
           - 'null'
-        reach_upper_bound:
+          description: TikTok-native business id.
+        username:
           type:
-          - number
+          - string
           - 'null'
-        reach_lower_bound:
-          type:
-          - number
-          - 'null'
-        region_reach:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokRegionReach'
+          example: '@kaufland'
       required:
-      - uuid
-      - captured_at
-      - is_active
-      - last_shown_date
-      - reach_upper_bound
-      - reach_lower_bound
-      - region_reach
+      - gid
+      - id_token
+      - name
+      - api_business_id
+      - username
     TiktokAd:
       type: object
       properties:
@@ -640,22 +656,6 @@ components:
       - media
       - region_reach
       - targeting
-    TiktokTargeting:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        age_range:
-          type: string
-          example: 25-34
-        gender:
-          type: string
-          example: female
-      required:
-      - region_code
-      - age_range
-      - gender
   securitySchemes:
     oauth:
       scheme: bearer

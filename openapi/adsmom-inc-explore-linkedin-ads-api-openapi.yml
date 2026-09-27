@@ -247,20 +247,116 @@ paths:
       - Explore · LinkedIn Ads
 components:
   schemas:
-    LinkedinTargeting:
+    LinkedinTargetingParameter:
       type: object
       properties:
-        segments:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkedinTargetingSegment'
-        parameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkedinTargetingParameter'
+        parameter:
+          type: string
+          example: Member skills
+        targeted:
+          type: boolean
+        excluded:
+          type: boolean
       required:
-      - segments
-      - parameters
+      - parameter
+      - targeted
+      - excluded
+    LinkedinImpressionsTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - linkedin
+          example: linkedin
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinImpressionsPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
+    LinkedinAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        cover_image_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+        analysis_status:
+          type: string
+          enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          description: Creative-analysis pipeline status.
+        analysis:
+          allOf:
+          - $ref: '#/components/schemas/LinkedinAdMediaAnalysis'
+      required:
+      - id
+      - type
+      - media_url
+      - cover_image_url
+      - analysis_status
+      - analysis
+    LinkedinImpressionsPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        impressions_lower_bound:
+          type:
+          - number
+          - 'null'
+          example: 10000
+        impressions_upper_bound:
+          type:
+          - number
+          - 'null'
+          example: 50000
+      required:
+      - date
+      - impressions_lower_bound
+      - impressions_upper_bound
+    LinkedinCountryImpression:
+      type: object
+      properties:
+        country:
+          type: string
+          example: Germany
+        percent:
+          type:
+          - number
+          - 'null'
+          description: Impression share, percent (LinkedIn reports shares, not counts).
+          example: 34
+      required:
+      - country
+      - percent
     LinkedinAdSummary:
       type: object
       properties:
@@ -345,6 +441,42 @@ components:
       - format
       - primary_text
       - thumbnail_url
+    LinkedinAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/linkedin/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: linkedin.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Microsoft
+        company_id:
+          type:
+          - string
+          - 'null'
+          description: LinkedIn /company/{id} key.
+      required:
+      - gid
+      - id_token
+      - name
+      - company_id
+    LinkedinTargeting:
+      type: object
+      properties:
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinTargetingSegment'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkedinTargetingParameter'
+      required:
+      - segments
+      - parameters
     LinkedinAd:
       type: object
       properties:
@@ -519,21 +651,6 @@ components:
       - impressions_lower_bound
       - impressions_upper_bound
       - country_impressions
-    LinkedinCountryImpression:
-      type: object
-      properties:
-        country:
-          type: string
-          example: Germany
-        percent:
-          type:
-          - number
-          - 'null'
-          description: Impression share, percent (LinkedIn reports shares, not counts).
-          example: 34
-      required:
-      - country
-      - percent
     LinkedinAdMediaAnalysis:
       type: object
       properties:
@@ -590,28 +707,6 @@ components:
       - topics
       - on_screen_text
       - spoken_content
-    LinkedinAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/linkedin/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: linkedin.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Microsoft
-        company_id:
-          type:
-          - string
-          - 'null'
-          description: LinkedIn /company/{id} key.
-      required:
-      - gid
-      - id_token
-      - name
-      - company_id
     LinkedinTargetingSegment:
       type: object
       properties:
@@ -630,101 +725,6 @@ components:
       - category
       - visible
       - hidden
-    LinkedinImpressionsPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        impressions_lower_bound:
-          type:
-          - number
-          - 'null'
-          example: 10000
-        impressions_upper_bound:
-          type:
-          - number
-          - 'null'
-          example: 50000
-      required:
-      - date
-      - impressions_lower_bound
-      - impressions_upper_bound
-    LinkedinTargetingParameter:
-      type: object
-      properties:
-        parameter:
-          type: string
-          example: Member skills
-        targeted:
-          type: boolean
-        excluded:
-          type: boolean
-      required:
-      - parameter
-      - targeted
-      - excluded
-    LinkedinAdMedia:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - video
-          - image
-        media_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min).
-        cover_image_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min).
-        analysis_status:
-          type: string
-          enum:
-          - pending
-          - processing
-          - completed
-          - failed
-          description: Creative-analysis pipeline status.
-        analysis:
-          allOf:
-          - $ref: '#/components/schemas/LinkedinAdMediaAnalysis'
-      required:
-      - id
-      - type
-      - media_url
-      - cover_image_url
-      - analysis_status
-      - analysis
-    LinkedinImpressionsTimeline:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/linkedin/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: linkedin.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - linkedin
-          example: linkedin
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/LinkedinImpressionsPoint'
-      required:
-      - gid
-      - id_token
-      - platform
-      - daily
   securitySchemes:
     oauth:
       scheme: bearer

@@ -1,5 +1,5 @@
 aid: adsmom-inc
-name: Adsmom Inc.
+name: Adsmom
 description: Adsmom (SIA Adsmom) is a Latvia-based AI-powered ad intelligence platform that indexes 200M+
   ads from Meta, TikTok and Google, decodes them with AI, and gives brands, agencies and research teams
   a clear read on what competitors are running and what is actually working. The platform covers ad search
@@ -59,8 +59,8 @@ tags:
 - OpenAPI
 - REST
 - Analytics
-- Social-Media
-- agent-native
+- Social Media
+- Agent-Native
 tags_raw:
 - Company
 - Advertising
@@ -75,6 +75,8 @@ tags_raw:
 - Analytics
 - Social Media
 - Agent Native
+- agent-native
+- Social-Media
 apis:
 - name: Adsmom MCP Server
   description: First-party hosted Model Context Protocol server that exposes the same ad index to AI assistants
@@ -86,11 +88,12 @@ apis:
   tags:
   - MCP
   - Artificial Intelligence
-  - agent-native
+  - Agent-Native
   tags_raw:
   - MCP
   - AI
   - Agent Native
+  - agent-native
   properties:
   - type: MCPServer
     url: mcp/adsmom-inc-mcp.yml
@@ -512,3 +515,4 @@ x-enrichment:
   note: Contract discovery on the API host root found a real, previously-missed OpenAPI 3.0.0 at https://api.adsmom.com/api/v1/openapi.json
     (66 paths, 78 operations, 110 schemas) and corrected the MCP endpoint from the web-app root to https://api.adsmom.com/mcp,
     verified by a JSON-RPC tools/list probe returning a spec-correct 401 OAuth challenge.
+x-legal-name: Adsmom Inc.
