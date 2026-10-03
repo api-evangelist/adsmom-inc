@@ -247,18 +247,6 @@ paths:
       - Explore · TikTok Ads
 components:
   schemas:
-    TiktokReachPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
-      required:
-      - date
-      - reach
     TiktokTargeting:
       type: object
       properties:
@@ -275,77 +263,6 @@ components:
       - region_code
       - age_range
       - gender
-    TiktokAdSummary:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: tiktok.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - tiktok
-          example: tiktok
-        api_id:
-          type: string
-          description: TikTok-native ad id.
-          example: 17420...
-        advertiser:
-          $ref: '#/components/schemas/TiktokAdvertiserRef'
-        is_active:
-          type: boolean
-          example: true
-        start_date:
-          type:
-          - string
-          - 'null'
-          example: '2026-05-01'
-        end_date:
-          type:
-          - string
-          - 'null'
-          description: Last-shown date; null while active.
-        reach_upper_bound:
-          type:
-          - number
-          - 'null'
-        reach_lower_bound:
-          type:
-          - number
-          - 'null'
-        format:
-          type: string
-          enum:
-          - video
-          - image
-          - unknown
-        primary_text:
-          type:
-          - string
-          - 'null'
-          description: Ad description.
-        thumbnail_url:
-          type:
-          - string
-          - 'null'
-          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
-      required:
-      - gid
-      - id_token
-      - platform
-      - api_id
-      - advertiser
-      - is_active
-      - start_date
-      - end_date
-      - reach_upper_bound
-      - reach_lower_bound
-      - format
-      - primary_text
-      - thumbnail_url
     TiktokRegionReach:
       type: object
       properties:
@@ -358,65 +275,18 @@ components:
       required:
       - region_code
       - reach
-    TiktokReachTimeline:
+    TiktokReachPoint:
       type: object
       properties:
-        gid:
+        date:
           type: string
-          example: gid://adsmom/tiktok/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: tiktok.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - tiktok
-          example: tiktok
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokReachPoint'
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
       required:
-      - gid
-      - id_token
-      - platform
-      - daily
-    TiktokAdSnapshot:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
-        captured_at:
-          type: string
-          description: When this capture was taken (ISO 8601).
-        is_active:
-          type: boolean
-          example: true
-        last_shown_date:
-          type:
-          - string
-          - 'null'
-        reach_upper_bound:
-          type:
-          - number
-          - 'null'
-        reach_lower_bound:
-          type:
-          - number
-          - 'null'
-        region_reach:
-          type: array
-          items:
-            $ref: '#/components/schemas/TiktokRegionReach'
-      required:
-      - uuid
-      - captured_at
-      - is_active
-      - last_shown_date
-      - reach_upper_bound
-      - reach_lower_bound
-      - region_reach
+      - date
+      - reach
     TiktokAdMedia:
       type: object
       properties:
@@ -538,34 +408,100 @@ components:
       - brand_names
       - on_screen_text
       - spoken_content
-    TiktokAdvertiserRef:
+    TiktokAdSummary:
       type: object
       properties:
         gid:
           type: string
-          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
         id_token:
           type: string
-          example: tiktok.advertiser.0192f1c3-...
-        name:
+          example: tiktok.ad.0192f1c3-...
+        platform:
           type: string
-          example: Kaufland
-        api_business_id:
+          enum:
+          - tiktok
+          example: tiktok
+        api_id:
+          type: string
+          description: TikTok-native ad id.
+          example: 17420...
+        advertiser:
+          $ref: '#/components/schemas/TiktokAdvertiserRef'
+        is_active:
+          type: boolean
+          example: true
+        start_date:
           type:
           - string
           - 'null'
-          description: TikTok-native business id.
-        username:
+          example: '2026-05-01'
+        end_date:
           type:
           - string
           - 'null'
-          example: '@kaufland'
+          description: Last-shown date; null while active.
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        format:
+          type: string
+          enum:
+          - video
+          - image
+          - unknown
+        primary_text:
+          type:
+          - string
+          - 'null'
+          description: Ad description.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed, short-lived (~10 min). Fetch promptly or re-request.
       required:
       - gid
       - id_token
-      - name
-      - api_business_id
-      - username
+      - platform
+      - api_id
+      - advertiser
+      - is_active
+      - start_date
+      - end_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - format
+      - primary_text
+      - thumbnail_url
+    TiktokReachTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - tiktok
+          example: tiktok
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
     TiktokAd:
       type: object
       properties:
@@ -656,6 +592,70 @@ components:
       - media
       - region_reach
       - targeting
+    TiktokAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: tiktok.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+        api_business_id:
+          type:
+          - string
+          - 'null'
+          description: TikTok-native business id.
+        username:
+          type:
+          - string
+          - 'null'
+          example: '@kaufland'
+      required:
+      - gid
+      - id_token
+      - name
+      - api_business_id
+      - username
+    TiktokAdSnapshot:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Snapshot uuid — address one at /ads/{id}/snapshots/{uuid}.
+        captured_at:
+          type: string
+          description: When this capture was taken (ISO 8601).
+        is_active:
+          type: boolean
+          example: true
+        last_shown_date:
+          type:
+          - string
+          - 'null'
+        reach_upper_bound:
+          type:
+          - number
+          - 'null'
+        reach_lower_bound:
+          type:
+          - number
+          - 'null'
+        region_reach:
+          type: array
+          items:
+            $ref: '#/components/schemas/TiktokRegionReach'
+      required:
+      - uuid
+      - captured_at
+      - is_active
+      - last_shown_date
+      - reach_upper_bound
+      - reach_lower_bound
+      - region_reach
   securitySchemes:
     oauth:
       scheme: bearer

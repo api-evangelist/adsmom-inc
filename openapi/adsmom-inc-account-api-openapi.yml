@@ -25,6 +25,34 @@ paths:
       - Account
 components:
   schemas:
+    Usage:
+      type: object
+      properties:
+        plan:
+          type: string
+          example: BUSINESS
+        tracked_advertisers:
+          type: number
+          description: Active tracked advertisers.
+          example: 37
+        credits:
+          $ref: '#/components/schemas/UsageCredits'
+        rate_limit:
+          $ref: '#/components/schemas/UsageRateLimit'
+      required:
+      - plan
+      - tracked_advertisers
+      - credits
+      - rate_limit
+    UsageRateLimit:
+      type: object
+      properties:
+        requests_per_minute:
+          type: number
+          description: Requests allowed per window.
+          example: 120
+      required:
+      - requests_per_minute
     UsageCredits:
       type: object
       properties:
@@ -56,34 +84,6 @@ components:
       - remaining
       - period_start
       - period_end
-    UsageRateLimit:
-      type: object
-      properties:
-        requests_per_minute:
-          type: number
-          description: Requests allowed per window.
-          example: 120
-      required:
-      - requests_per_minute
-    Usage:
-      type: object
-      properties:
-        plan:
-          type: string
-          example: BUSINESS
-        tracked_advertisers:
-          type: number
-          description: Active tracked advertisers.
-          example: 37
-        credits:
-          $ref: '#/components/schemas/UsageCredits'
-        rate_limit:
-          $ref: '#/components/schemas/UsageRateLimit'
-      required:
-      - plan
-      - tracked_advertisers
-      - credits
-      - rate_limit
   securitySchemes:
     oauth:
       scheme: bearer

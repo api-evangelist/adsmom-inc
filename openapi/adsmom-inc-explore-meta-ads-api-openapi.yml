@@ -191,43 +191,6 @@ paths:
       - Explore · Meta Ads
 components:
   schemas:
-    MetaAdMedia:
-      type: object
-      properties:
-        id:
-          type: string
-        type:
-          type: string
-          enum:
-          - video
-          - image
-        media_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min). Video only.
-        thumbnail_url:
-          type:
-          - string
-          - 'null'
-          description: Signed (~10 min).
-      required:
-      - id
-      - type
-      - media_url
-      - thumbnail_url
-    MetaReachPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
-      required:
-      - date
-      - reach
     MetaAd:
       type: object
       properties:
@@ -359,6 +322,43 @@ components:
       - id_token
       - platform
       - daily
+    MetaAdMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+          - video
+          - image
+        media_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min). Video only.
+        thumbnail_url:
+          type:
+          - string
+          - 'null'
+          description: Signed (~10 min).
+      required:
+      - id
+      - type
+      - media_url
+      - thumbnail_url
+    MetaReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
     MetaTargeting:
       type: object
       properties:
@@ -383,22 +383,6 @@ components:
       - age_range
       - gender
       - locations
-    MetaAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - name
     MetaAdSummary:
       type: object
       properties:
@@ -467,6 +451,22 @@ components:
       - headline
       - primary_text
       - thumbnail_url
+    MetaAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - name
   securitySchemes:
     oauth:
       scheme: bearer
