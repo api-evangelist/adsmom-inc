@@ -135,134 +135,6 @@ paths:
       - Insights · Meta
 components:
   schemas:
-    WeeklyReport:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        week_start:
-          type: string
-          example: '2026-06-15'
-        week_end:
-          type: string
-          example: '2026-06-21'
-        created_at:
-          type:
-          - string
-          - 'null'
-        report:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        metrics:
-          type:
-          - object
-          - 'null'
-        previous_metrics:
-          type:
-          - object
-          - 'null'
-      required:
-      - gid
-      - id_token
-      - platform
-      - week_start
-      - week_end
-      - created_at
-      - report
-      - metrics
-      - previous_metrics
-    TrackedAdvertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        name:
-          type: string
-          example: Kaufland
-        external_id:
-          type:
-          - string
-          - 'null'
-          description: Platform-native business id, when resolved.
-        is_active:
-          type: boolean
-          example: true
-        pending_ingest:
-          type: boolean
-          description: True when the ingest crawl has not completed yet.
-        tracked_at:
-          type:
-          - string
-          - 'null'
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
-      - external_id
-      - is_active
-      - pending_ingest
-      - tracked_at
-    MetaTrackBody:
-      type: object
-      properties:
-        query:
-          type: string
-          description: Facebook page name, handle, or numeric page id. A numeric id is matched exactly; otherwise the top page-search result is tracked.
-      required:
-      - query
-    Advertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          description: Canonical global id. Use the slash-free form in path params.
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          description: Slash-free id token for use in URL path segments.
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-          example: tiktok
-        name:
-          type: string
-          description: Advertiser / page display name.
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
     AdvertiserInsight:
       type: object
       properties:
@@ -321,6 +193,134 @@ components:
       - ad_analysis
       - initial_assessment
       - recommendations
+    WeeklyReport:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        week_start:
+          type: string
+          example: '2026-06-15'
+        week_end:
+          type: string
+          example: '2026-06-21'
+        created_at:
+          type:
+          - string
+          - 'null'
+        report:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        metrics:
+          type:
+          - object
+          - 'null'
+        previous_metrics:
+          type:
+          - object
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - week_start
+      - week_end
+      - created_at
+      - report
+      - metrics
+      - previous_metrics
+    Advertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+          example: tiktok
+        name:
+          type: string
+          description: Advertiser / page display name.
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    MetaTrackBody:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Facebook page name, handle, or numeric page id. A numeric id is matched exactly; otherwise the top page-search result is tracked.
+      required:
+      - query
+    TrackedAdvertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        name:
+          type: string
+          example: Kaufland
+        external_id:
+          type:
+          - string
+          - 'null'
+          description: Platform-native business id, when resolved.
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+      - external_id
+      - is_active
+      - pending_ingest
+      - tracked_at
   securitySchemes:
     oauth:
       scheme: bearer

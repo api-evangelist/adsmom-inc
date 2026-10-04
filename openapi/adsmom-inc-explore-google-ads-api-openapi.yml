@@ -123,7 +123,34 @@ paths:
       - Explore · Google Ads
 components:
   schemas:
-    GoogleAd:
+    GoogleAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/google/advertiser/AR1234...
+        id_token:
+          type: string
+          example: google.advertiser.AR1234...
+        name:
+          type: string
+          example: Kaufland
+        origin_country:
+          type:
+          - string
+          - 'null'
+          example: DE
+        icon:
+          type:
+          - string
+          - 'null'
+      required:
+      - gid
+      - id_token
+      - name
+      - origin_country
+      - icon
+    GoogleAdSummary:
       type: object
       properties:
         gid:
@@ -182,22 +209,6 @@ components:
           - string
           - 'null'
           description: Signed, short-lived (~10 min). Fetch promptly or re-request.
-        call_to_action:
-          type:
-          - string
-          - 'null'
-        destination_url:
-          type:
-          - string
-          - 'null'
-        media:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleAdMedia'
-        targeting:
-          description: Only with `include=full_targeting`; null otherwise.
-          allOf:
-          - $ref: '#/components/schemas/GoogleTargeting'
       required:
       - gid
       - id_token
@@ -212,37 +223,16 @@ components:
       - headline
       - primary_text
       - thumbnail_url
-      - call_to_action
-      - destination_url
-      - media
-      - targeting
-    GoogleAdvertiserRef:
+    GoogleTargeting:
       type: object
       properties:
-        gid:
-          type: string
-          example: gid://adsmom/google/advertiser/AR1234...
-        id_token:
-          type: string
-          example: google.advertiser.AR1234...
-        name:
-          type: string
-          example: Kaufland
-        origin_country:
-          type:
-          - string
-          - 'null'
-          example: DE
-        icon:
-          type:
-          - string
-          - 'null'
+        region_codes:
+          description: Region codes the ad was shown in (Google-internal codes).
+          type: array
+          items:
+            type: string
       required:
-      - gid
-      - id_token
-      - name
-      - origin_country
-      - icon
+      - region_codes
     GoogleAdMedia:
       type: object
       properties:
@@ -362,7 +352,7 @@ components:
       - brand_names
       - on_screen_text
       - spoken_content
-    GoogleAdSummary:
+    GoogleAd:
       type: object
       properties:
         gid:
@@ -421,6 +411,22 @@ components:
           - string
           - 'null'
           description: Signed, short-lived (~10 min). Fetch promptly or re-request.
+        call_to_action:
+          type:
+          - string
+          - 'null'
+        destination_url:
+          type:
+          - string
+          - 'null'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleAdMedia'
+        targeting:
+          description: Only with `include=full_targeting`; null otherwise.
+          allOf:
+          - $ref: '#/components/schemas/GoogleTargeting'
       required:
       - gid
       - id_token
@@ -435,16 +441,10 @@ components:
       - headline
       - primary_text
       - thumbnail_url
-    GoogleTargeting:
-      type: object
-      properties:
-        region_codes:
-          description: Region codes the ad was shown in (Google-internal codes).
-          type: array
-          items:
-            type: string
-      required:
-      - region_codes
+      - call_to_action
+      - destination_url
+      - media
+      - targeting
   securitySchemes:
     oauth:
       scheme: bearer

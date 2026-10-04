@@ -172,7 +172,7 @@ components:
       - handle
       - name
       - follower_count
-    SocialAccountWeeklyReport:
+    TrackedSocialAccount:
       type: object
       properties:
         gid:
@@ -186,39 +186,36 @@ components:
           enum:
           - tiktok-social
           - instagram-social
-        week_start:
+        handle:
           type: string
-          example: '2026-06-15'
-        week_end:
+          example: nike
+        name:
           type: string
-          example: '2026-06-21'
-        created_at:
+          example: Nike
+        follower_count:
+          type:
+          - number
+          - 'null'
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
           type:
           - string
-          - 'null'
-        report:
-          type:
-          - object
-          - 'null'
-          description: AI-generated; structure may evolve.
-        metrics:
-          type:
-          - object
-          - 'null'
-        previous_metrics:
-          type:
-          - object
           - 'null'
       required:
       - gid
       - id_token
       - platform
-      - week_start
-      - week_end
-      - created_at
-      - report
-      - metrics
-      - previous_metrics
+      - handle
+      - name
+      - follower_count
+      - is_active
+      - pending_ingest
+      - tracked_at
     SocialAccountInsight:
       type: object
       properties:
@@ -275,16 +272,7 @@ components:
       - content_analysis
       - initial_assessment
       - recommendations
-    SocialAccountTrackBody:
-      type: object
-      properties:
-        handle:
-          type: string
-          description: Account handle to track — an @handle, a bare handle, or a profile URL (tiktok.com/@x, instagram.com/x). Tracking kicks off a crawl; posts appear a few minutes later.
-          example: '@nike'
-      required:
-      - handle
-    TrackedSocialAccount:
+    SocialAccountWeeklyReport:
       type: object
       properties:
         gid:
@@ -298,36 +286,48 @@ components:
           enum:
           - tiktok-social
           - instagram-social
-        handle:
+        week_start:
           type: string
-          example: nike
-        name:
+          example: '2026-06-15'
+        week_end:
           type: string
-          example: Nike
-        follower_count:
-          type:
-          - number
-          - 'null'
-        is_active:
-          type: boolean
-          example: true
-        pending_ingest:
-          type: boolean
-          description: True when the ingest crawl has not completed yet.
-        tracked_at:
+          example: '2026-06-21'
+        created_at:
           type:
           - string
+          - 'null'
+        report:
+          type:
+          - object
+          - 'null'
+          description: AI-generated; structure may evolve.
+        metrics:
+          type:
+          - object
+          - 'null'
+        previous_metrics:
+          type:
+          - object
           - 'null'
       required:
       - gid
       - id_token
       - platform
+      - week_start
+      - week_end
+      - created_at
+      - report
+      - metrics
+      - previous_metrics
+    SocialAccountTrackBody:
+      type: object
+      properties:
+        handle:
+          type: string
+          description: Account handle to track — an @handle, a bare handle, or a profile URL (tiktok.com/@x, instagram.com/x). Tracking kicks off a crawl; posts appear a few minutes later.
+          example: '@nike'
+      required:
       - handle
-      - name
-      - follower_count
-      - is_active
-      - pending_ingest
-      - tracked_at
   securitySchemes:
     oauth:
       scheme: bearer

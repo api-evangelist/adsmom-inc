@@ -368,6 +368,80 @@ paths:
       - Analytics · Meta
 components:
   schemas:
+    MetaTargetingPart:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        ad_count:
+          type: number
+          example: 18
+        excluded_count:
+          type: number
+          example: 2
+      required:
+      - advertiser
+      - ad_count
+      - excluded_count
+    MetaRegionReachPart:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        reach:
+          type: number
+          example: 92100
+      required:
+      - advertiser
+      - reach
+    MetaTargetedRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 31
+        excluded_count:
+          type: number
+          example: 4
+        per_advertiser:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTargetingPart'
+      required:
+      - region_code
+      - ad_count
+      - excluded_count
+      - per_advertiser
+    MetaShareOfVoiceChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaShareOfVoiceSeries'
+      required:
+      - series
+    MetaActivityChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaActivitySeries'
+      required:
+      - series
+    MetaRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaRegion'
+      required:
+      - regions
     MetaReachSeries:
       type: object
       properties:
@@ -380,6 +454,93 @@ components:
       required:
       - advertiser
       - points
+    MetaReachRegionsChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaRegionReach'
+      required:
+      - regions
+    MetaTopAdsChart:
+      type: object
+      properties:
+        ads:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTopAdRow'
+      required:
+      - ads
+    AnalyticsAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          example: tiktok
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    MetaActivitySeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaActivityPoint'
+      required:
+      - advertiser
+      - points
+    MetaTargetingChart:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaTargetedRegion'
+      required:
+      - regions
+    MetaReachPoint:
+      type: object
+      properties:
+        date:
+          type: string
+          example: '2026-05-12'
+        reach:
+          type: number
+          example: 84000
+      required:
+      - date
+      - reach
+    MetaRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        total_reach:
+          type: number
+          example: 184200
+      required:
+      - region_code
+      - total_reach
     ConcentrationPoint:
       type: object
       properties:
@@ -394,32 +555,26 @@ components:
       required:
       - pct_ads
       - pct_reach
-    MetaReachRegionsChart:
+    MetaActivityPoint:
       type: object
       properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaRegionReach'
-      required:
-      - regions
-    MetaRegionReach:
-      type: object
-      properties:
-        region_code:
+        bucket_start:
           type: string
-          example: US
-        total_reach:
+          example: '2026-05-08'
+        bucket_end:
+          type: string
+          example: '2026-05-09'
+        new_ads:
           type: number
-          example: 184200
-        per_advertiser:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaRegionReachPart'
+          example: 12
+        active_ads:
+          type: number
+          example: 47
       required:
-      - region_code
-      - total_reach
-      - per_advertiser
+      - bucket_start
+      - bucket_end
+      - new_ads
+      - active_ads
     MetaTopAdRow:
       type: object
       properties:
@@ -466,145 +621,6 @@ components:
       - started_at
       - ended_at
       - total_reach
-    MetaTargetingPart:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        ad_count:
-          type: number
-          example: 18
-        excluded_count:
-          type: number
-          example: 2
-      required:
-      - advertiser
-      - ad_count
-      - excluded_count
-    MetaRegionsChart:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaRegion'
-      required:
-      - regions
-    MetaReachChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaReachSeries'
-      required:
-      - series
-    AnalyticsAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          example: tiktok
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
-    MetaRegionReachPart:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        reach:
-          type: number
-          example: 92100
-      required:
-      - advertiser
-      - reach
-    MetaActivitySeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        points:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaActivityPoint'
-      required:
-      - advertiser
-      - points
-    MetaActivityChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaActivitySeries'
-      required:
-      - series
-    MetaTargetingChart:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaTargetedRegion'
-      required:
-      - regions
-    MetaTopAdsChart:
-      type: object
-      properties:
-        ads:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaTopAdRow'
-      required:
-      - ads
-    MetaActivityPoint:
-      type: object
-      properties:
-        bucket_start:
-          type: string
-          example: '2026-05-08'
-        bucket_end:
-          type: string
-          example: '2026-05-09'
-        new_ads:
-          type: number
-          example: 12
-        active_ads:
-          type: number
-          example: 47
-      required:
-      - bucket_start
-      - bucket_end
-      - new_ads
-      - active_ads
-    MetaReachPoint:
-      type: object
-      properties:
-        date:
-          type: string
-          example: '2026-05-12'
-        reach:
-          type: number
-          example: 84000
-      required:
-      - date
-      - reach
     MetaShareOfVoiceSeries:
       type: object
       properties:
@@ -635,7 +651,16 @@ components:
       - gini
       - lorenz
       - top_reaches
-    MetaRegion:
+    MetaReachChart:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachSeries'
+      required:
+      - series
+    MetaRegionReach:
       type: object
       properties:
         region_code:
@@ -644,39 +669,14 @@ components:
         total_reach:
           type: number
           example: 184200
-      required:
-      - region_code
-      - total_reach
-    MetaTargetedRegion:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        ad_count:
-          type: number
-          example: 31
-        excluded_count:
-          type: number
-          example: 4
         per_advertiser:
           type: array
           items:
-            $ref: '#/components/schemas/MetaTargetingPart'
+            $ref: '#/components/schemas/MetaRegionReachPart'
       required:
       - region_code
-      - ad_count
-      - excluded_count
+      - total_reach
       - per_advertiser
-    MetaShareOfVoiceChart:
-      type: object
-      properties:
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaShareOfVoiceSeries'
-      required:
-      - series
   securitySchemes:
     oauth:
       scheme: bearer
