@@ -191,22 +191,6 @@ paths:
       - Explore · Meta Ads
 components:
   schemas:
-    MetaAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/advertiser/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.advertiser.0192f1c3-...
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - name
     MetaAdMedia:
       type: object
       properties:
@@ -364,6 +348,45 @@ components:
       - languages
       - media
       - targeting
+    MetaAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/advertiser/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.advertiser.0192f1c3-...
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - name
+    MetaReachTimeline:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/facebook/ad/0192f1c3-...
+        id_token:
+          type: string
+          example: meta.ad.0192f1c3-...
+        platform:
+          type: string
+          enum:
+          - meta
+          example: meta
+        daily:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetaReachPoint'
+      required:
+      - gid
+      - id_token
+      - platform
+      - daily
     MetaAdSummary:
       type: object
       properties:
@@ -444,29 +467,6 @@ components:
       required:
       - date
       - reach
-    MetaReachTimeline:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/facebook/ad/0192f1c3-...
-        id_token:
-          type: string
-          example: meta.ad.0192f1c3-...
-        platform:
-          type: string
-          enum:
-          - meta
-          example: meta
-        daily:
-          type: array
-          items:
-            $ref: '#/components/schemas/MetaReachPoint'
-      required:
-      - gid
-      - id_token
-      - platform
-      - daily
   securitySchemes:
     oauth:
       scheme: bearer

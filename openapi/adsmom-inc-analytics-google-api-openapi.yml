@@ -373,18 +373,41 @@ paths:
       - Analytics · Google
 components:
   schemas:
-    RuntimeBucket:
+    GoogleRegionsChart:
       type: object
       properties:
-        label:
-          type: string
-          example: 8-14d
-        count:
-          type: number
-          example: 23
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRegion'
       required:
-      - label
-      - count
+      - regions
+    GoogleRegion:
+      type: object
+      properties:
+        region_code:
+          type: string
+          example: US
+        ad_count:
+          type: number
+          example: 84
+      required:
+      - region_code
+      - ad_count
+    ConcentrationPoint:
+      type: object
+      properties:
+        pct_ads:
+          type: number
+          description: Cumulative share of ads (0..1).
+          example: 0.2
+        pct_reach:
+          type: number
+          description: Cumulative share of reach (0..1).
+          example: 0.65
+      required:
+      - pct_ads
+      - pct_reach
     GoogleShareOfVoiceChart:
       type: object
       properties:
@@ -406,6 +429,60 @@ components:
       required:
       - advertiser
       - points
+    AnalyticsAdvertiserRef:
+      type: object
+      properties:
+        gid:
+          type: string
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          example: tiktok
+        name:
+          type: string
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
+    GoogleRegionImpression:
+      type: object
+      properties:
+        region_code:
+          type:
+          - string
+          - 'null'
+          example: US
+        lower_bound:
+          type: number
+          example: 100000
+        upper_bound:
+          type: number
+          example: 1000000
+      required:
+      - region_code
+      - lower_bound
+      - upper_bound
+    GoogleOptimalRuntimeSeries:
+      type: object
+      properties:
+        advertiser:
+          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeBucket'
+      required:
+      - advertiser
+      - buckets
     GoogleStatsEntry:
       type: object
       properties:
@@ -455,6 +532,33 @@ components:
       - total_impressions
       - regions
       - surfaces
+    GoogleCreativeChart:
+      type: object
+      properties:
+        dimension:
+          type: string
+          example: content_format
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleCreativeSeries'
+      required:
+      - dimension
+      - series
+    GoogleRuntimeChart:
+      type: object
+      properties:
+        distribution:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleRuntimeSeries'
+        optimal:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleOptimalRuntimeSeries'
+      required:
+      - distribution
+      - optimal
     GoogleCreativeBucket:
       type: object
       properties:
@@ -471,90 +575,6 @@ components:
       - value
       - count
       - impressions
-    GoogleRegion:
-      type: object
-      properties:
-        region_code:
-          type: string
-          example: US
-        ad_count:
-          type: number
-          example: 84
-      required:
-      - region_code
-      - ad_count
-    GoogleStatsChart:
-      type: object
-      properties:
-        advertisers:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleStatsEntry'
-      required:
-      - advertisers
-    GoogleRegionImpression:
-      type: object
-      properties:
-        region_code:
-          type:
-          - string
-          - 'null'
-          example: US
-        lower_bound:
-          type: number
-          example: 100000
-        upper_bound:
-          type: number
-          example: 1000000
-      required:
-      - region_code
-      - lower_bound
-      - upper_bound
-    GoogleActivityPoint:
-      type: object
-      properties:
-        period_start:
-          type: string
-          example: '2026-05-01'
-        new_ads:
-          type: number
-          example: 12
-        active_ads:
-          type: number
-          example: 47
-        impressions:
-          type: number
-          description: Prorated impressions for the bucket (upper bound).
-          example: 142000
-      required:
-      - period_start
-      - new_ads
-      - active_ads
-      - impressions
-    AnalyticsAdvertiserRef:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          example: tiktok
-        name:
-          type: string
-          example: Kaufland
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
     GoogleShareOfVoiceSeries:
       type: object
       properties:
@@ -585,7 +605,7 @@ components:
       - total_reach
       - gini
       - lorenz
-    GoogleOptimalRuntimeBucket:
+    RuntimeBucket:
       type: object
       properties:
         label:
@@ -594,13 +614,9 @@ components:
         count:
           type: number
           example: 23
-        avg_impressions:
-          type: number
-          example: 142000
       required:
       - label
       - count
-      - avg_impressions
     GoogleImpressionRange:
       type: object
       properties:
@@ -613,41 +629,27 @@ components:
       required:
       - lower_bound
       - upper_bound
-    GoogleRuntimeChart:
+    GoogleActivityPoint:
       type: object
       properties:
-        distribution:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleRuntimeSeries'
-        optimal:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleOptimalRuntimeSeries'
+        period_start:
+          type: string
+          example: '2026-05-01'
+        new_ads:
+          type: number
+          example: 12
+        active_ads:
+          type: number
+          example: 47
+        impressions:
+          type: number
+          description: Prorated impressions for the bucket (upper bound).
+          example: 142000
       required:
-      - distribution
-      - optimal
-    GoogleOptimalRuntimeSeries:
-      type: object
-      properties:
-        advertiser:
-          $ref: '#/components/schemas/AnalyticsAdvertiserRef'
-        buckets:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleOptimalRuntimeBucket'
-      required:
-      - advertiser
-      - buckets
-    GoogleRegionsChart:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleRegion'
-      required:
-      - regions
+      - period_start
+      - new_ads
+      - active_ads
+      - impressions
     GoogleCreativeSeries:
       type: object
       properties:
@@ -660,20 +662,6 @@ components:
       required:
       - advertiser
       - breakdown
-    ConcentrationPoint:
-      type: object
-      properties:
-        pct_ads:
-          type: number
-          description: Cumulative share of ads (0..1).
-          example: 0.2
-        pct_reach:
-          type: number
-          description: Cumulative share of reach (0..1).
-          example: 0.65
-      required:
-      - pct_ads
-      - pct_reach
     GoogleSurfaceImpression:
       type: object
       properties:
@@ -699,6 +687,31 @@ components:
             $ref: '#/components/schemas/GoogleActivitySeries'
       required:
       - series
+    GoogleOptimalRuntimeBucket:
+      type: object
+      properties:
+        label:
+          type: string
+          example: 8-14d
+        count:
+          type: number
+          example: 23
+        avg_impressions:
+          type: number
+          example: 142000
+      required:
+      - label
+      - count
+      - avg_impressions
+    GoogleStatsChart:
+      type: object
+      properties:
+        advertisers:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleStatsEntry'
+      required:
+      - advertisers
     GoogleRuntimeSeries:
       type: object
       properties:
@@ -711,19 +724,6 @@ components:
       required:
       - advertiser
       - buckets
-    GoogleCreativeChart:
-      type: object
-      properties:
-        dimension:
-          type: string
-          example: content_format
-        series:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoogleCreativeSeries'
-      required:
-      - dimension
-      - series
   securitySchemes:
     oauth:
       scheme: bearer

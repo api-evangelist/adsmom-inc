@@ -135,6 +135,34 @@ paths:
       - Insights · Google
 components:
   schemas:
+    Advertiser:
+      type: object
+      properties:
+        gid:
+          type: string
+          description: Canonical global id. Use the slash-free form in path params.
+          example: gid://adsmom/tiktok/advertiser/123456
+        id_token:
+          type: string
+          description: Slash-free id token for use in URL path segments.
+          example: tiktok.advertiser.123456
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+          example: tiktok
+        name:
+          type: string
+          description: Advertiser / page display name.
+          example: Kaufland
+      required:
+      - gid
+      - id_token
+      - platform
+      - name
     AdvertiserInsight:
       type: object
       properties:
@@ -193,14 +221,49 @@ components:
       - ad_analysis
       - initial_assessment
       - recommendations
-    GoogleTrackBody:
+    TrackedAdvertiser:
       type: object
       properties:
-        advertiser_id:
+        gid:
           type: string
-          description: A Google Ad Library advertiser id.
+          example: gid://adsmom/tiktok/advertiser/7100
+        id_token:
+          type: string
+          example: tiktok.advertiser.7100
+        platform:
+          type: string
+          enum:
+          - meta
+          - tiktok
+          - google
+          - linkedin
+        name:
+          type: string
+          example: Kaufland
+        external_id:
+          type:
+          - string
+          - 'null'
+          description: Platform-native business id, when resolved.
+        is_active:
+          type: boolean
+          example: true
+        pending_ingest:
+          type: boolean
+          description: True when the ingest crawl has not completed yet.
+        tracked_at:
+          type:
+          - string
+          - 'null'
       required:
-      - advertiser_id
+      - gid
+      - id_token
+      - platform
+      - name
+      - external_id
+      - is_active
+      - pending_ingest
+      - tracked_at
     WeeklyReport:
       type: object
       properties:
@@ -250,77 +313,14 @@ components:
       - report
       - metrics
       - previous_metrics
-    Advertiser:
+    GoogleTrackBody:
       type: object
       properties:
-        gid:
+        advertiser_id:
           type: string
-          description: Canonical global id. Use the slash-free form in path params.
-          example: gid://adsmom/tiktok/advertiser/123456
-        id_token:
-          type: string
-          description: Slash-free id token for use in URL path segments.
-          example: tiktok.advertiser.123456
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-          example: tiktok
-        name:
-          type: string
-          description: Advertiser / page display name.
-          example: Kaufland
+          description: A Google Ad Library advertiser id.
       required:
-      - gid
-      - id_token
-      - platform
-      - name
-    TrackedAdvertiser:
-      type: object
-      properties:
-        gid:
-          type: string
-          example: gid://adsmom/tiktok/advertiser/7100
-        id_token:
-          type: string
-          example: tiktok.advertiser.7100
-        platform:
-          type: string
-          enum:
-          - meta
-          - tiktok
-          - google
-          - linkedin
-        name:
-          type: string
-          example: Kaufland
-        external_id:
-          type:
-          - string
-          - 'null'
-          description: Platform-native business id, when resolved.
-        is_active:
-          type: boolean
-          example: true
-        pending_ingest:
-          type: boolean
-          description: True when the ingest crawl has not completed yet.
-        tracked_at:
-          type:
-          - string
-          - 'null'
-      required:
-      - gid
-      - id_token
-      - platform
-      - name
-      - external_id
-      - is_active
-      - pending_ingest
-      - tracked_at
+      - advertiser_id
   securitySchemes:
     oauth:
       scheme: bearer
